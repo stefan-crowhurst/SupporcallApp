@@ -1,7 +1,13 @@
 import React from 'react';
 import { Toolbar } from "./components/toolbar";
 import "./bstyles.scss";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Home } from "./pages/home";
+import { Tickets } from "./pages/tickets";
+import { Agents } from "./pages/agents";
+import { Contacts } from "./pages/contacts";
+import { Reports } from "./pages/reports";
+
 
 const App = () => {
   return (
@@ -13,19 +19,19 @@ const App = () => {
 
         <Switch>
           <Route path="/tickets">
-            <>tickets</>
+            <Tickets />
           </Route>
           <Route path="/agents">
-            <>agents</>
+            <Agents />
           </Route>
           <Route path="/contacts">
-            <>contacts</>
+            <Contacts />
           </Route>
           <Route path="/reports">
-            <>reports</>
+            <Reports />
           </Route>
           <Route path="/">
-            <>home</>
+            <Home />
           </Route>
         </Switch>
       </Router>
