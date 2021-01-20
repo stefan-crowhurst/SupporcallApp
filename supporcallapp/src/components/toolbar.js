@@ -1,67 +1,23 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 import "../bstyles.scss";
 
 export const Toolbar = () => {
   return (
     <>
-      <nav class="navbar" role="navigation" aria-label="main navigation">
-        <div class="navbar-brand">
-          <a class="navbar-item" href="https://bulma.io">
-            <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28" />
-          </a>
-
-          <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-          </a>
+      <nav class="level is-mobile">
+        <div class="level-left">
+          <Link to="/" class="level-item"><img src="https://bulma.io/images/bulma-logo.png" width="112" height="28" alt="Logo" /></Link>
+          <Link to="/" class="level-item button is-light">Home</Link>
+          <Link to="/tickets" class="level-item button is-light">Tickets</Link>
+          <Link to="/agents" class="level-item button is-light">Agents</Link>
+          <Link to="/contacts" class="level-item button is-light">Contacts</Link>
+          <Link to="/reports" class="level-item button is-light">Reports</Link>
         </div>
-
-        <div id="navbarBasicExample" class="navbar-menu">
-          <div class="navbar-start">
-            <a class="navbar-item">
-              Home
-            </a>
-
-            <a class="navbar-item">
-              Documentation
-            </a>
-
-            <div class="navbar-item has-dropdown is-hoverable">
-              <a class="navbar-link">
-                More
-              </a>
-
-              <div class="navbar-dropdown">
-                <a class="navbar-item">
-                  About
-                </a>
-                <a class="navbar-item">
-                  Jobs
-                </a>
-                <a class="navbar-item">
-                  Contact
-                </a>
-                <hr class="navbar-divider" />
-                <a class="navbar-item">
-                  Report an issue
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <div class="navbar-end">
-            <div class="navbar-item">
-              <div class="buttons">
-                <a class="button is-primary">
-                  <strong>Sign up</strong>
-                </a>
-                <a class="button is-light">
-                  Log in
-                </a>
-              </div>
-            </div>
-          </div>
+        <div class="level-right">
+          <div class="level-item button is-light">Dialler</div>
+          <div class="level-item button is-light">Status</div>
+          <div class="level-item button is-primary">Log in</div>
         </div>
       </nav>
     </>
