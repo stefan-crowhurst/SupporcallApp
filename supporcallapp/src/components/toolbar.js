@@ -16,7 +16,7 @@ export const Toolbar = () => {
     <>
       <nav class="level is-mobile" style={{borderBottom:"1px solid #CCCCCC"}}> {/*need to update this if the $border colour is updated at a later date*/}
         <div class="level-left">
-          <Link to="/" class="level-item"><img src="../../supporcall-small.fw.png" width="112" height="28" style={{paddingLeft:"6%"}} alt="Logo" /></Link>
+          <Link to="/" class="level-item"><img src="../../supporcall-small.png" width="112" height="28" style={{paddingLeft:"6%"}} alt="Logo" /></Link>
           <Link to="/" class={navBtnClass} style={navBtnStyle}>
             <span class="icon"><FontAwesomeIcon icon={faHome} /></span>
             <span>Home</span>

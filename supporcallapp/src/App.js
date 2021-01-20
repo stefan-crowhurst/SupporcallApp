@@ -17,23 +17,25 @@ const App = () => {
           <Toolbar />
         </div>
 
-        <Switch>
-          <Route path="/tickets">
-            <Tickets />
-          </Route>
-          <Route path="/agents">
-            <Agents />
-          </Route>
-          <Route path="/contacts">
-            <Contacts />
-          </Route>
-          <Route path="/reports">
-            <Reports />
-          </Route>
-          <Route path="/">
-            <Home />
-          </Route>
-        </Switch>
+        <div style={{width:"100%", paddingLeft:"0.5%", paddingRight:"0.5%", paddingTop:"0.25%"}}>
+          <Switch>
+            <Route path="/tickets">
+              <Tickets />
+            </Route>
+            <Route path="/agents">
+              <Agents />
+            </Route>
+            <Route path="/contacts">
+              <Contacts />
+            </Route>
+            <Route path="/reports">
+              <Reports />
+            </Route>
+            <Route path="/">
+              <Home />
+            </Route>
+          </Switch>
+        </div>
       </Router>
     </div>
   );
