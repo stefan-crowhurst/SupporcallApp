@@ -3,15 +3,19 @@ import "../bstyles.scss";
 import axios from "axios";
 
 export const Contacts = () => {
-
-  let currentClass = "";
   let [contactList, setContactList] = useState([]);
+  let [currentContact, setCurrentContact] = useState();
+  let contactEditMode = false;
 
-  useEffect(async () => {
-    await axios.get("https://supporcallapi.azurewebsites.net/api/Contacts").then((i) => {
-      setContactList(i.data);
-      console.log(i);
-    });
+  useEffect(() => {
+    // async await moved to internal function to prevent useEffect race conditions
+    // lambda can't be used, so a simply named local function is defined instead
+    async function x() {
+      await axios.get("https://supporcallapi.azurewebsites.net/api/Contacts").then((i) => {
+        setContactList(i.data);
+      });
+    }
+    x();
   }, []);
 
   return (
@@ -30,16 +34,15 @@ export const Contacts = () => {
             </thead>
             <tbody>
               {contactList.map((e) =>
-                <tr id={e.id} style={{cursor:"pointer"}} onClick={() => {
+                <tr id={e.id} style={{cursor:"pointer"}} onClick={async () => {
                   // update table styling
-                  if (currentClass !== e.id && currentClass && currentClass.length > 0) {
-                    document.getElementById(currentClass).classList.remove('is-selected');
+                  if (currentContact && currentContact.id && currentContact.id !== e.id && currentContact.id.length > 0) {
+                    document.getElementById(currentContact.id).classList.remove('is-selected');
                   }
                   document.getElementById(e.id).classList.add('is-selected');
-                  currentClass = e.id;
 
                   // update detail view
-                  // TODO
+                  await axios.get("https://supporcallapi.azurewebsites.net/api/Contacts/" + e.id).then((c) => setCurrentContact(c.data))
                 }}>
                   <th>{e.id}</th>
                   <td>{e.forename} {e.surname}</td>
@@ -54,13 +57,17 @@ export const Contacts = () => {
       </div>
       <div class="column">
         <div class="box" style={{width:"100%"}}>
-          <p>detail content here</p>
-          <button class="button" onClick={async () => {
-            await axios.get("https://supporcallapi.azurewebsites.net/api/Contacts").then((i) => console.log(i));
-          }}>Test contact list</button>
-          <button class="button" onClick={async () => {
-            await axios.get("https://supporcallapi.azurewebsites.net/api/Contacts/C1").then((i) => console.log(i));
-          }}>Test contact C1</button>
+          {currentContact ?
+            <div style={{width:"100%"}}>
+              <button class="button" onClick={() => {contactEditMode = !contactEditMode; console.log(contactEditMode)}}>Edit?</button>
+              <input class="input" type="text is-static" value={currentContact.forename} readOnly={contactEditMode} />
+              <input class="input" type="text is-static" value={currentContact.surname} readOnly={contactEditMode} />
+              <input class="input" type="text is-static" value={currentContact.role} readOnly={contactEditMode} />
+              <input class="input" type="text is-static" value={currentContact.email} readOnly={contactEditMode} />
+              <input class="input" type="text is-static" value={currentContact.phoneNumber} readOnly={contactEditMode} />
+              <input class="input" type="text is-static" value={currentContact.orgId} readOnly={contactEditMode} />
+            </div>
+           : "None"}
         </div>
       </div>
     </div>
