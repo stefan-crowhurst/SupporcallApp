@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import "../bstyles.scss";
 import axios from "axios";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPencilAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 export const Contacts = () => {
   let [contactList, setContactList] = useState([]);
   let [currentContact, setCurrentContact] = useState();
+  let [detailLoading, setDetailLoading] = useState(false);
   let contactEditMode = false;
 
   useEffect(() => {
@@ -22,52 +25,148 @@ export const Contacts = () => {
     <div class="columns" style={{width:"100%"}}>
       <div class="column">
         <div class="table-container box" style={{width:"100%"}}>
-          <table class="table is-hoverable is-fullwidth">
-            <thead>
-              <tr>
-                <th><abbr title="Contact ID">ID</abbr></th>
-                <th>Name</th>
-                <th>Email</th>
-                <th><abbr title="Organisation">Org.</abbr></th>
-                <th>Role</th>
-              </tr>
-            </thead>
-            <tbody>
-              {contactList.map((e) =>
-                <tr id={e.id} style={{cursor:"pointer"}} onClick={async () => {
-                  // update table styling
-                  if (currentContact && currentContact.id && currentContact.id !== e.id && currentContact.id.length > 0) {
-                    document.getElementById(currentContact.id).classList.remove('is-selected');
-                  }
-                  document.getElementById(e.id).classList.add('is-selected');
+          {contactList && contactList.length > 0 ?
+            <>
+              <div class="level">
+                <div class="level-left">
+                  <h2 class="title is-4 level-item" style={{marginBottom:"0.4em"}}>All Contacts</h2>
+                </div>
+                <div class="level-right">
+                  <button class="button is-primary level-item">
+                    <span class="icon"><FontAwesomeIcon icon={faPlus} /></span>
+                    <span>Create</span>
+                  </button>
+                </div>
+              </div>
+              <table class="table is-hoverable is-fullwidth">
+                <thead>
+                  <tr>
+                    <th><abbr title="Contact ID">ID</abbr></th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th><abbr title="Organisation">Org.</abbr></th>
+                    <th>Role</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {contactList.map((e) =>
+                    <tr id={e.id} style={{cursor:"pointer"}} onClick={async () => {
+                      // initiate loading display on detail panel
+                      setDetailLoading(true);
+                      console.log("loading set");
 
-                  // update detail view
-                  await axios.get("https://supporcallapi.azurewebsites.net/api/Contacts/" + e.id).then((c) => setCurrentContact(c.data))
-                }}>
-                  <th>{e.id}</th>
-                  <td>{e.forename} {e.surname}</td>
-                  <td>{e.email}</td>
-                  <td>{e.orgId}</td>
-                  <td>{e.role}</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                      // update table styling
+                      if (currentContact && currentContact.id && currentContact.id !== e.id && currentContact.id.length > 0) {
+                        document.getElementById(currentContact.id).classList.remove('is-selected');
+                      }
+                      document.getElementById(e.id).classList.add('is-selected');
+
+                      // update detail view
+                      await axios.get("https://supporcallapi.azurewebsites.net/api/Contacts/" + e.id).then((c) => {
+                        setCurrentContact(c.data);
+                        setDetailLoading(false);
+                        console.log("loading unset");
+                      });
+                    }}>
+                      <th>{e.id}</th>
+                      <td>{e.forename} {e.surname}</td>
+                      <td>{e.email}</td>
+                      <td>{e.orgId}</td>
+                      <td>{e.role}</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </>
+          :
+          <div style={{width:"100%", textAlign:"center"}}>
+            <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
+            <h3><b>Loading contacts...</b></h3>
+          </div>}
         </div>
       </div>
       <div class="column">
         <div class="box" style={{width:"100%"}}>
-          {currentContact ?
-            <div style={{width:"100%"}}>
-              <button class="button" onClick={() => {contactEditMode = !contactEditMode; console.log(contactEditMode)}}>Edit?</button>
-              <input class="input" type="text is-static" value={currentContact.forename} readOnly={contactEditMode} />
-              <input class="input" type="text is-static" value={currentContact.surname} readOnly={contactEditMode} />
-              <input class="input" type="text is-static" value={currentContact.role} readOnly={contactEditMode} />
-              <input class="input" type="text is-static" value={currentContact.email} readOnly={contactEditMode} />
-              <input class="input" type="text is-static" value={currentContact.phoneNumber} readOnly={contactEditMode} />
-              <input class="input" type="text is-static" value={currentContact.orgId} readOnly={contactEditMode} />
-            </div>
-           : "None"}
+          {detailLoading ?
+          <div style={{width:"100%", textAlign:"center"}}>
+            <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
+            <h3><b>Loading details...</b></h3>
+          </div>
+          : currentContact ?
+            <form style={{width:"100%"}}>
+              <div class="level">
+                <div class="level-left">
+                  <h2 class="title is-4 level-item" style={{marginBottom:"0.4em"}}>Contact: {currentContact.id}</h2>
+                </div>
+                <div class="level-right">
+                  <button class="button is-rounded is-light level-item" onClick={(e) => {
+                    e.preventDefault();
+                    contactEditMode = !contactEditMode;
+                    console.log(contactEditMode);
+                  }}>
+                    <span class="icon"><FontAwesomeIcon icon={faPencilAlt} /></span>
+                  </button>
+                </div>
+              </div>
+              <div class="field is-horizontal" style={{width:"100%"}}>
+                <div class="field-label is-normal">
+                  <label class="label">Forename</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                    <p class="control">
+                      <input class="input is-static" type="text" value={currentContact.forename} readonly />
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-one-fifth">
+                  <span>Surname</span>
+                </div>
+                <div class="column">
+                  <input class="input" type="text is-static" value={currentContact.surname} readOnly={contactEditMode} />
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-one-fifth">
+                  <span>Role</span>
+                </div>
+                <div class="column">
+                  <input class="input" type="text is-static" value={currentContact.role} readOnly={contactEditMode} />
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-one-fifth">
+                  <span>Email</span>
+                </div>
+                <div class="column">
+                  <input class="input" type="text is-static" value={currentContact.email} readOnly={contactEditMode} />
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-one-fifth">
+                  <span>Phone Number</span>
+                </div>
+                <div class="column">
+                  <input class="input" type="text is-static" value={currentContact.phoneNumber} readOnly={contactEditMode} />
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-one-fifth">
+                  <span>Organisation</span>
+                </div>
+                <div class="column">
+                  {/* TODO: Change this into a dropdown once the API is available */}
+                  <input class="input" type="text is-static" value={currentContact.orgId} readOnly={contactEditMode} />
+                </div>
+              </div>
+            </form>
+          :
+          <div style={{width:"100%"}}>
+            <h2 class="title is-4">No contact selected</h2>
+            <h3 class="subtitle is-6">Please select or create a contact from the table panel</h3>
+          </div>}
         </div>
       </div>
     </div>
