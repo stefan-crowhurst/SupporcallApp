@@ -49,8 +49,11 @@ export const Toolbar = () => {
             </div>
             <div class="dropdown-menu" id="status-dropdown" role="menu">
               <div class="dropdown-content">
+                {/*eslint-disable-next-line*/}
                 <a class="dropdown-item">Available</a>
+                {/*eslint-disable-next-line*/}
                 <a class="dropdown-item">Unavailable</a>
+                {/*eslint-disable-next-line*/}
                 <a class="dropdown-item">Offline</a>
               </div>
             </div>

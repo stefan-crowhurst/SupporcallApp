@@ -8,7 +8,6 @@ import { Agents } from "./pages/agents";
 import { Contacts } from "./pages/contacts";
 import { Reports } from "./pages/reports";
 
-
 const App = () => {
   return (
     <div>

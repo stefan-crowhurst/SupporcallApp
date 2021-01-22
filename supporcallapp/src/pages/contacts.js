@@ -1,9 +1,16 @@
-import React from 'react';
-import { Link } from "react-router-dom";
+import React, { useState } from 'react';
 import "../bstyles.scss";
+import axios from "axios";
+
+let tmpCntctLst = [];
+axios.get("https://supporcallapi.azurewebsites.net/api/Contacts").then((i) => {
+  tmpCntctLst = i.data;
+});
 
 export const Contacts = () => {
   let currentClass = "";
+  let [contactList, setContactList] = useState(tmpCntctLst);
+  console.log(contactList);
 
   return (
     <div class="columns" style={{width:"100%"}}>
@@ -15,43 +22,30 @@ export const Contacts = () => {
                 <th><abbr title="Contact ID">ID</abbr></th>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Organisation</th>
+                <th><abbr title="Organisation">Org.</abbr></th>
                 <th>Role</th>
               </tr>
             </thead>
             <tbody>
-              <tr id="C-1" style={{cursor:"pointer"}} onClick={() => {
-                const thisId = "C-1";
-                console.log("Yep, clicked");
-                if (currentClass != thisId && currentClass && currentClass.length > 0) {
-                  document.getElementById(currentClass).classList.remove('is-selected');
-                }
-                document.getElementById(thisId).classList.add('is-selected');
-                currentClass = thisId;
-                console.log(currentClass);
-              }}>
-                <th>C-1</th>
-                <td>Fname Sname</td>
-                <td>email@example.com</td>
-                <td>Company</td>
-                <td>Role</td>
-              </tr>
-              <tr id="C-2" style={{cursor:"pointer"}} onClick={() => {
-                const thisId = "C-2";
-                console.log("Yep, clicked");
-                if (currentClass != thisId && currentClass && currentClass.length > 0) {
-                  document.getElementById(currentClass).classList.remove('is-selected');
-                }
-                document.getElementById(thisId).classList.add('is-selected');
-                currentClass = thisId;
-                console.log(currentClass);
-              }}>
-                <th>C-2</th>
-                <td>Fname Sname</td>
-                <td>email@example.com</td>
-                <td>Company</td>
-                <td>Role</td>
-              </tr>
+              {contactList.map((e) =>
+                <tr id={e.id} style={{cursor:"pointer"}} onClick={() => {
+                  // update table styling
+                  if (currentClass !== e.id && currentClass && currentClass.length > 0) {
+                    document.getElementById(currentClass).classList.remove('is-selected');
+                  }
+                  document.getElementById(e.id).classList.add('is-selected');
+                  currentClass = e.id;
+
+                  // update detail view
+                  // TODO
+                }}>
+                  <th>{e.id}</th>
+                  <td>{e.forename} {e.surname}</td>
+                  <td>{e.email}</td>
+                  <td>{e.orgId}</td>
+                  <td>{e.role}</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -59,7 +53,12 @@ export const Contacts = () => {
       <div class="column">
         <div class="box" style={{width:"100%"}}>
           <p>detail content here</p>
-          <p>current class is {currentClass}</p>
+          <button class="button" onClick={async () => {
+            await axios.get("https://supporcallapi.azurewebsites.net/api/Contacts").then((i) => console.log(i));
+          }}>Test contact list</button>
+          <button class="button" onClick={async () => {
+            await axios.get("https://supporcallapi.azurewebsites.net/api/Contacts/C1").then((i) => console.log(i));
+          }}>Test contact C1</button>
         </div>
       </div>
     </div>
