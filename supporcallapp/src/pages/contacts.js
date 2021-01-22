@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import "../bstyles.scss";
 import axios from "axios";
 
-let tmpCntctLst = [];
-axios.get("https://supporcallapi.azurewebsites.net/api/Contacts").then((i) => {
-  tmpCntctLst = i.data;
-});
-
 export const Contacts = () => {
+
   let currentClass = "";
-  let [contactList, setContactList] = useState(tmpCntctLst);
-  console.log(contactList);
+  let [contactList, setContactList] = useState([]);
+
+  useEffect(async () => {
+    await axios.get("https://supporcallapi.azurewebsites.net/api/Contacts").then((i) => {
+      setContactList(i.data);
+      console.log(i);
+    });
+  }, []);
 
   return (
     <div class="columns" style={{width:"100%"}}>
