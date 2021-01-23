@@ -8,7 +8,7 @@ export const Contacts = () => {
   let [contactList, setContactList] = useState([]);
   let [currentContact, setCurrentContact] = useState();
   let [detailLoading, setDetailLoading] = useState(false);
-  let contactEditMode = false;
+  let [contactEditMode, setContactEditMode] = useState(false);
 
   useEffect(() => {
     // async await moved to internal function to prevent useEffect race conditions
@@ -92,7 +92,8 @@ export const Contacts = () => {
             <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
             <h3><b>Loading details...</b></h3>
           </div>
-          : currentContact ?
+          : currentContact && contactEditMode ?
+            // contact detail editing view
             <form style={{width:"100%"}}>
               <div class="level">
                 <div class="level-left">
@@ -101,8 +102,7 @@ export const Contacts = () => {
                 <div class="level-right">
                   <button class="button is-rounded is-light level-item" onClick={(e) => {
                     e.preventDefault();
-                    contactEditMode = !contactEditMode;
-                    console.log(contactEditMode);
+                    setContactEditMode(!contactEditMode);
                   }}>
                     <span class="icon"><FontAwesomeIcon icon={faPencilAlt} /></span>
                   </button>
@@ -121,7 +121,7 @@ export const Contacts = () => {
                 </div>
               </div>
               <div class="columns">
-                <div class="column is-one-fifth">
+                <div class="column is-one-quarter">
                   <span>Surname</span>
                 </div>
                 <div class="column">
@@ -129,7 +129,7 @@ export const Contacts = () => {
                 </div>
               </div>
               <div class="columns">
-                <div class="column is-one-fifth">
+                <div class="column is-one-quarter">
                   <span>Role</span>
                 </div>
                 <div class="column">
@@ -137,7 +137,7 @@ export const Contacts = () => {
                 </div>
               </div>
               <div class="columns">
-                <div class="column is-one-fifth">
+                <div class="column is-one-quarter">
                   <span>Email</span>
                 </div>
                 <div class="column">
@@ -145,7 +145,7 @@ export const Contacts = () => {
                 </div>
               </div>
               <div class="columns">
-                <div class="column is-one-fifth">
+                <div class="column is-one-quarter">
                   <span>Phone Number</span>
                 </div>
                 <div class="column">
@@ -153,7 +153,7 @@ export const Contacts = () => {
                 </div>
               </div>
               <div class="columns">
-                <div class="column is-one-fifth">
+                <div class="column is-one-quarter">
                   <span>Organisation</span>
                 </div>
                 <div class="column">
@@ -162,11 +162,77 @@ export const Contacts = () => {
                 </div>
               </div>
             </form>
+          : currentContact && !contactEditMode ?
+            // contact detail viewing section
+            <div style={{width:"100%"}}>
+              <div class="level">
+                <div class="level-left">
+                  <h2 class="title is-4 level-item" style={{marginBottom:"0.4em"}}>Contact: {currentContact.id}</h2>
+                </div>
+                <div class="level-right">
+                  <button class="button is-rounded is-light level-item" onClick={(e) => {
+                    e.preventDefault();
+                    setContactEditMode(!contactEditMode);
+                  }}>
+                    <span class="icon"><FontAwesomeIcon icon={faPencilAlt} /></span>
+                  </button>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-one-quarter">
+                  <span>Forename</span>
+                </div>
+                <div class="column">
+                  <label>{currentContact.forename ? currentContact.forename : "No forename set"}</label>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-one-quarter">
+                  <span>Surname</span>
+                </div>
+                <div class="column">
+                  <label>{currentContact.surname ? currentContact.surname : "No surname set"}</label>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-one-quarter">
+                  <span>Role</span>
+                </div>
+                <div class="column">
+                  <label>{currentContact.role ? currentContact.role : "No role set"}</label>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-one-quarter">
+                  <span>Email</span>
+                </div>
+                <div class="column">
+                  <label>{currentContact.email ? currentContact.email : "No email set"}</label>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-one-quarter">
+                  <span>Phone Number</span>
+                </div>
+                <div class="column">
+                  <label>{currentContact.phoneNumber ? currentContact.phoneNumber : "No phone number set"}</label>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-one-quarter">
+                  <span>Organisation</span>
+                </div>
+                <div class="column">
+                  <label>{currentContact.orgId ? currentContact.orgId : "No associated organisation"}</label>
+                </div>
+              </div>
+            </div>
           :
-          <div style={{width:"100%"}}>
-            <h2 class="title is-4">No contact selected</h2>
-            <h3 class="subtitle is-6">Please select or create a contact from the table panel</h3>
-          </div>}
+            <div style={{width:"100%"}}>
+              <h2 class="title is-4">No contact selected</h2>
+              <h3 class="subtitle is-6">Please select or create a contact from the table panel</h3>
+            </div>
+          }
         </div>
       </div>
     </div>
