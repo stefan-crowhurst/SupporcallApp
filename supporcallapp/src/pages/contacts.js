@@ -9,11 +9,13 @@ export const Contacts = () => {
   let [currentContact, setCurrentContact] = useState();
   let [detailLoading, setDetailLoading] = useState(false);
   let [contactEditMode, setContactEditMode] = useState(false);
+  let [contactCreateMode, setContactCreateMode] = useState(false);
 
   // react does not update the value props on html elements where the
   // value is set to a property of a stateful object, this means the form does
   // not update when using onChange/onInput. Since react doesn't support
-  // two-way binding as of v15.0 this is the only (messy) solution unfortunately
+  // two-way binding as of v15.0 this is the only (messy) solution unfortunately.
+  // these fields will be used for both creation and updating since they are common in both.
   let [newForename, setNewForename] = useState("");
   let [newSurname, setNewSurname] = useState("");
   let [newRole, setNewRole] = useState("");
@@ -32,8 +34,16 @@ export const Contacts = () => {
     x();
   }, []);
 
-  async function refreshContactTable(e) {
-    e.preventDefault(); // prevent page reload
+  function clearNewObject() {
+    setNewForename("");
+    setNewSurname("");
+    setNewRole("");
+    setNewEmail("");
+    setNewPhoneNumber("");
+    setNewOrgId("");
+  }
+
+  async function refreshContactTable() {
     setContactList([]); // this triggers the loading UI
     await axios.get("https://supporcallapi.azurewebsites.net/api/Contacts").then((i) => {
       setContactList(i.data);
@@ -60,10 +70,24 @@ export const Contacts = () => {
                   <h2 class="title is-4 level-item" style={{marginBottom:"0.4em"}}>All Contacts</h2>
                 </div>
                 <div class="level-right">
-                  <button class="button is-rounded is-light level-item" onClick={async (e) => refreshContactTable(e)}>
+                  <button class="button is-rounded is-light level-item" onClick={async (e) => {
+                    e.preventDefault(); // prevent page reload
+                    refreshContactTable(e);
+                  }}>
                     <span class="icon"><FontAwesomeIcon icon={faSync} /></span>
                   </button>
-                  <button class="button is-primary level-item">
+                  <button class="button is-primary level-item" onClick={(e) => {
+                    e.preventDefault();
+                    setContactCreateMode(true);
+                    // update table styling
+                    if (currentContact && currentContact.id && currentContact.id !== e.id && currentContact.id.length > 0) {
+                      document.getElementById(currentContact.id).classList.remove('is-selected');
+                      if (contactEditMode) {
+                        clearNewObject();
+                        setContactEditMode(false);
+                      }
+                    }
+                  }}>
                     <span class="icon"><FontAwesomeIcon icon={faPlus} /></span>
                     <span>Create</span>
                   </button>
@@ -85,8 +109,9 @@ export const Contacts = () => {
                       // initiate loading display on detail panel
                       setDetailLoading(true);
 
-                      // disable editing mode to prevent data persisting between selections
+                      // disable editing & creating modes to prevent data persisting between selections
                       setContactEditMode(false);
+                      setContactCreateMode(false);
 
                       // update table styling
                       if (currentContact && currentContact.id && currentContact.id !== e.id && currentContact.id.length > 0) {
@@ -124,27 +149,23 @@ export const Contacts = () => {
             <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
             <h3><b>Loading details...</b></h3>
           </div>
-          : currentContact && contactEditMode ?
+          : (currentContact && contactEditMode) || contactCreateMode ?
             // contact detail editing view
             <div style={{width:"100%"}}>
               <div class="level">
                 <div class="level-left">
-                  <h2 class="title is-4 level-item" style={{marginBottom:"0.4em"}}>Editing Contact: {currentContact.id}</h2>
+                  <h2 class="title is-4 level-item" style={{marginBottom:"0.4em"}}>{contactCreateMode ? <>Creating Contact</> : <>Editing Contact: {currentContact.id}</>}</h2>
                 </div>
+                {!contactCreateMode ?
                 <div class="level-right">
                   <button class="button is-rounded is-dark level-item" onClick={(e) => {
                     e.preventDefault(); // prevent page reload
-                    setNewForename("");
-                    setNewSurname("");
-                    setNewRole("");
-                    setNewEmail("");
-                    setNewPhoneNumber("");
-                    setNewOrgId("");
+                    clearNewObject();
                     setContactEditMode(!contactEditMode);
                   }}>
                     <span class="icon"><FontAwesomeIcon icon={faPencilAlt} /></span>
                   </button>
-                </div>
+                </div> : null}
               </div>
               <div class="columns">
                 <div class="column is-one-quarter">
@@ -208,21 +229,43 @@ export const Contacts = () => {
                 </div>
               </div>
               <div style={{width:"100%", textAlign:"center"}}>
-                <button class="button is-primary" onClick={async (e) => {
-                  e.preventDefault(); // prevent page reload
-                  setDetailLoading(true);
-                  setContactEditMode(false);
-                  await axios.post("https://supporcallapi.azurewebsites.net/api/Contacts/update", {
-                    id : currentContact.id,
-                    forename: newForename,
-                    surname: newSurname,
-                    role: newRole,
-                    email: newEmail,
-                    phoneNumber: newPhoneNumber,
-                    orgId: newOrgId
-                  }).then((r) => setCurrentContact(r.data));
-                  setDetailLoading(false);
-                }}>Submit Update</button>
+                { contactCreateMode ? 
+                  <button class="button is-primary" onClick={async (e) => {
+                    e.preventDefault();
+                    setDetailLoading(true);
+                    setContactCreateMode(false);
+                    // TODO: Test this works in insomnia and then in the application itself
+                    await axios.post("https://supporcallapi.azurewebsites.net/api/Contacts", {
+                      forename: newForename,
+                      surname: newSurname,
+                      role: newRole,
+                      email: newEmail,
+                      phoneNumber: newPhoneNumber,
+                      orgId: newOrgId
+                    }).then(() => {
+                      setDetailLoading(false);
+                      refreshContactTable();
+                      clearNewObject();
+                      setCurrentContact();
+                    });
+                  }}>Create Contact</button>
+                :
+                  <button class="button is-primary" onClick={async (e) => {
+                    e.preventDefault(); // prevent page reload
+                    setDetailLoading(true);
+                    setContactEditMode(false);
+                    await axios.post("https://supporcallapi.azurewebsites.net/api/Contacts/update", {
+                      id : currentContact.id,
+                      forename: newForename,
+                      surname: newSurname,
+                      role: newRole,
+                      email: newEmail,
+                      phoneNumber: newPhoneNumber,
+                      orgId: newOrgId
+                    }).then((r) => setCurrentContact(r.data));
+                    setDetailLoading(false);
+                  }}>Update Contact</button>
+                }
               </div>
             </div>
           : currentContact && !contactEditMode ?
