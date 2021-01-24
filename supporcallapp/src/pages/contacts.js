@@ -2,13 +2,24 @@ import React, { useEffect, useState } from 'react';
 import "../bstyles.scss";
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPencilAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPencilAlt, faPlus, faSync } from '@fortawesome/free-solid-svg-icons';
 
 export const Contacts = () => {
   let [contactList, setContactList] = useState([]);
   let [currentContact, setCurrentContact] = useState();
   let [detailLoading, setDetailLoading] = useState(false);
   let [contactEditMode, setContactEditMode] = useState(false);
+
+  // react does not update the value props on html elements where the
+  // value is set to a property of a stateful object, this means the form does
+  // not update when using onChange/onInput. Since react doesn't support
+  // two-way binding as of v15.0 this is the only (messy) solution unfortunately
+  let [newForename, setNewForename] = useState("");
+  let [newSurname, setNewSurname] = useState("");
+  let [newRole, setNewRole] = useState("");
+  let [newEmail, setNewEmail] = useState("");
+  let [newPhoneNumber, setNewPhoneNumber] = useState("");
+  let [newOrgId, setNewOrgId] = useState("");
 
   useEffect(() => {
     // async await moved to internal function to prevent useEffect race conditions
@@ -21,6 +32,23 @@ export const Contacts = () => {
     x();
   }, []);
 
+  async function refreshContactTable(e) {
+    e.preventDefault(); // prevent page reload
+    setContactList([]); // this triggers the loading UI
+    await axios.get("https://supporcallapi.azurewebsites.net/api/Contacts").then((i) => {
+      setContactList(i.data);
+    });
+  }
+
+  async function refreshContactDetails(e) {
+    e.preventDefault(); // prevent page reload
+    setDetailLoading(true);
+    await axios.get("https://supporcallapi.azurewebsites.net/api/Contacts/" + currentContact.id).then((c) => {
+      setCurrentContact(c.data);
+      setDetailLoading(false);
+    });
+  }
+
   return (
     <div class="columns" style={{width:"100%"}}>
       <div class="column">
@@ -32,6 +60,9 @@ export const Contacts = () => {
                   <h2 class="title is-4 level-item" style={{marginBottom:"0.4em"}}>All Contacts</h2>
                 </div>
                 <div class="level-right">
+                  <button class="button is-rounded is-light level-item" onClick={async (e) => refreshContactTable(e)}>
+                    <span class="icon"><FontAwesomeIcon icon={faSync} /></span>
+                  </button>
                   <button class="button is-primary level-item">
                     <span class="icon"><FontAwesomeIcon icon={faPlus} /></span>
                     <span>Create</span>
@@ -53,7 +84,9 @@ export const Contacts = () => {
                     <tr id={e.id} style={{cursor:"pointer"}} onClick={async () => {
                       // initiate loading display on detail panel
                       setDetailLoading(true);
-                      console.log("loading set");
+
+                      // disable editing mode to prevent data persisting between selections
+                      setContactEditMode(false);
 
                       // update table styling
                       if (currentContact && currentContact.id && currentContact.id !== e.id && currentContact.id.length > 0) {
@@ -65,7 +98,6 @@ export const Contacts = () => {
                       await axios.get("https://supporcallapi.azurewebsites.net/api/Contacts/" + e.id).then((c) => {
                         setCurrentContact(c.data);
                         setDetailLoading(false);
-                        console.log("loading unset");
                       });
                     }}>
                       <th>{e.id}</th>
@@ -94,30 +126,34 @@ export const Contacts = () => {
           </div>
           : currentContact && contactEditMode ?
             // contact detail editing view
-            <form style={{width:"100%"}}>
+            <div style={{width:"100%"}}>
               <div class="level">
                 <div class="level-left">
-                  <h2 class="title is-4 level-item" style={{marginBottom:"0.4em"}}>Contact: {currentContact.id}</h2>
+                  <h2 class="title is-4 level-item" style={{marginBottom:"0.4em"}}>Editing Contact: {currentContact.id}</h2>
                 </div>
                 <div class="level-right">
-                  <button class="button is-rounded is-light level-item" onClick={(e) => {
-                    e.preventDefault();
+                  <button class="button is-rounded is-dark level-item" onClick={(e) => {
+                    e.preventDefault(); // prevent page reload
+                    setNewForename("");
+                    setNewSurname("");
+                    setNewRole("");
+                    setNewEmail("");
+                    setNewPhoneNumber("");
+                    setNewOrgId("");
                     setContactEditMode(!contactEditMode);
                   }}>
                     <span class="icon"><FontAwesomeIcon icon={faPencilAlt} /></span>
                   </button>
                 </div>
               </div>
-              <div class="field is-horizontal" style={{width:"100%"}}>
-                <div class="field-label is-normal">
-                  <label class="label">Forename</label>
+              <div class="columns">
+                <div class="column is-one-quarter">
+                  <span>Forename</span>
                 </div>
-                <div class="field-body">
-                  <div class="field">
-                    <p class="control">
-                      <input class="input is-static" type="text" value={currentContact.forename} readonly />
-                    </p>
-                  </div>
+                <div class="column">
+                  <input class="input" type="text" value={newForename} onChange={(e) => {
+                    setNewForename(e.target.value);
+                  }} />
                 </div>
               </div>
               <div class="columns">
@@ -125,7 +161,9 @@ export const Contacts = () => {
                   <span>Surname</span>
                 </div>
                 <div class="column">
-                  <input class="input" type="text is-static" value={currentContact.surname} readOnly={contactEditMode} />
+                  <input class="input" type="text" value={newSurname} onChange={(e) => {
+                    setNewSurname(e.target.value);
+                  }} />
                 </div>
               </div>
               <div class="columns">
@@ -133,7 +171,9 @@ export const Contacts = () => {
                   <span>Role</span>
                 </div>
                 <div class="column">
-                  <input class="input" type="text is-static" value={currentContact.role} readOnly={contactEditMode} />
+                  <input class="input" type="text" value={newRole} onChange={(e) => {
+                    setNewRole(e.target.value);
+                  }} />
                 </div>
               </div>
               <div class="columns">
@@ -141,7 +181,9 @@ export const Contacts = () => {
                   <span>Email</span>
                 </div>
                 <div class="column">
-                  <input class="input" type="text is-static" value={currentContact.email} readOnly={contactEditMode} />
+                  <input class="input" type="text" value={newEmail} onChange={(e) => {
+                    setNewEmail(e.target.value);
+                  }} />
                 </div>
               </div>
               <div class="columns">
@@ -149,7 +191,9 @@ export const Contacts = () => {
                   <span>Phone Number</span>
                 </div>
                 <div class="column">
-                  <input class="input" type="text is-static" value={currentContact.phoneNumber} readOnly={contactEditMode} />
+                  <input class="input" type="text" value={newPhoneNumber} onChange={(e) => {
+                    setNewPhoneNumber(e.target.value);
+                  }} />
                 </div>
               </div>
               <div class="columns">
@@ -158,10 +202,29 @@ export const Contacts = () => {
                 </div>
                 <div class="column">
                   {/* TODO: Change this into a dropdown once the API is available */}
-                  <input class="input" type="text is-static" value={currentContact.orgId} readOnly={contactEditMode} />
+                  <input class="input" type="text" value={newOrgId} onChange={(e) => {
+                    setNewOrgId(e.target.value);
+                  }} />
                 </div>
               </div>
-            </form>
+              <div style={{width:"100%", textAlign:"center"}}>
+                <button class="button is-primary" onClick={async (e) => {
+                  e.preventDefault(); // prevent page reload
+                  setDetailLoading(true);
+                  setContactEditMode(false);
+                  await axios.post("https://supporcallapi.azurewebsites.net/api/Contacts/update", {
+                    id : currentContact.id,
+                    forename: newForename,
+                    surname: newSurname,
+                    role: newRole,
+                    email: newEmail,
+                    phoneNumber: newPhoneNumber,
+                    orgId: newOrgId
+                  }).then((r) => setCurrentContact(r.data));
+                  setDetailLoading(false);
+                }}>Submit Update</button>
+              </div>
+            </div>
           : currentContact && !contactEditMode ?
             // contact detail viewing section
             <div style={{width:"100%"}}>
@@ -170,8 +233,17 @@ export const Contacts = () => {
                   <h2 class="title is-4 level-item" style={{marginBottom:"0.4em"}}>Contact: {currentContact.id}</h2>
                 </div>
                 <div class="level-right">
+                  <button class="button is-rounded is-light level-item" onClick={async (e) => refreshContactDetails(e)}>
+                    <span class="icon"><FontAwesomeIcon icon={faSync} /></span>
+                  </button>
                   <button class="button is-rounded is-light level-item" onClick={(e) => {
-                    e.preventDefault();
+                    e.preventDefault(); // prevent page reload
+                    setNewForename(currentContact.forename);
+                    setNewSurname(currentContact.surname);
+                    setNewRole(currentContact.role);
+                    setNewEmail(currentContact.email);
+                    setNewPhoneNumber(currentContact.phoneNumber);
+                    setNewOrgId(currentContact.orgId);
                     setContactEditMode(!contactEditMode);
                   }}>
                     <span class="icon"><FontAwesomeIcon icon={faPencilAlt} /></span>
