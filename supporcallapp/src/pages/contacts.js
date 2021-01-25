@@ -24,14 +24,7 @@ export const Contacts = () => {
   let [newOrgId, setNewOrgId] = useState("");
 
   useEffect(() => {
-    // async await moved to internal function to prevent useEffect race conditions
-    // lambda can't be used, so a simply named local function is defined instead
-    async function x() {
-      await axios.get("https://supporcallapi.azurewebsites.net/api/Contacts").then((i) => {
-        setContactList(i.data);
-      });
-    }
-    x();
+    refreshContactTable();
   }, []);
 
   function clearNewObject() {
@@ -43,10 +36,14 @@ export const Contacts = () => {
     setNewOrgId("");
   }
 
-  async function refreshContactTable() {
+  async function refreshContactTable(isdelete) {
     setContactList([]); // this triggers the loading UI
     await axios.get("https://supporcallapi.azurewebsites.net/api/Contacts").then((i) => {
       setContactList(i.data);
+    }).then(() => {
+      if (!isdelete && currentContact && currentContact.id.length > 0) {
+        document.getElementById(currentContact.id).classList.add('is-selected');
+      }
     });
   }
 
@@ -72,7 +69,7 @@ export const Contacts = () => {
                 <div class="level-right">
                   <button class="button is-rounded is-light level-item" onClick={async (e) => {
                     e.preventDefault(); // prevent page reload
-                    refreshContactTable(e);
+                    refreshContactTable(false);
                   }}>
                     <span class="icon"><FontAwesomeIcon icon={faSync} /></span>
                   </button>
@@ -234,7 +231,6 @@ export const Contacts = () => {
                     e.preventDefault();
                     setDetailLoading(true);
                     setContactCreateMode(false);
-                    // TODO: Test this works in insomnia and then in the application itself
                     await axios.post("https://supporcallapi.azurewebsites.net/api/Contacts", {
                       forename: newForename,
                       surname: newSurname,
@@ -244,7 +240,7 @@ export const Contacts = () => {
                       orgId: newOrgId
                     }).then(() => {
                       setDetailLoading(false);
-                      refreshContactTable();
+                      refreshContactTable(false);
                       clearNewObject();
                       setCurrentContact();
                     });
@@ -262,8 +258,11 @@ export const Contacts = () => {
                       email: newEmail,
                       phoneNumber: newPhoneNumber,
                       orgId: newOrgId
-                    }).then((r) => setCurrentContact(r.data));
-                    setDetailLoading(false);
+                    }).then((r) => {
+                      setCurrentContact(r.data);
+                      setDetailLoading(false);
+                      refreshContactTable(false);
+                    });
                   }}>Update Contact</button>
                 }
               </div>
@@ -295,7 +294,7 @@ export const Contacts = () => {
                     e.preventDefault(); // prevent page reload
                     await axios.delete("https://supporcallapi.azurewebsites.net/api/Contacts/" + currentContact.id).then(() => {
                       setCurrentContact();
-                      refreshContactTable();
+                      refreshContactTable(true);
                     });
                   }}>
                     <span class="icon"><FontAwesomeIcon icon={faTrashAlt} /></span>
