@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import "../bstyles.scss";
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPencilAlt, faPlus, faSync } from '@fortawesome/free-solid-svg-icons';
+import { faPencilAlt, faPlus, faSync, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 export const Contacts = () => {
   let [contactList, setContactList] = useState([]);
@@ -290,6 +290,15 @@ export const Contacts = () => {
                     setContactEditMode(!contactEditMode);
                   }}>
                     <span class="icon"><FontAwesomeIcon icon={faPencilAlt} /></span>
+                  </button>
+                  <button class="button is-rounded is-light level-item" onClick={async (e) => {
+                    e.preventDefault(); // prevent page reload
+                    await axios.delete("https://supporcallapi.azurewebsites.net/api/Contacts/" + currentContact.id).then(() => {
+                      setCurrentContact();
+                      refreshContactTable();
+                    });
+                  }}>
+                    <span class="icon"><FontAwesomeIcon icon={faTrashAlt} /></span>
                   </button>
                 </div>
               </div>
