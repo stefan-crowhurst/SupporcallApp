@@ -79,8 +79,8 @@ export const Contacts = () => {
                     // update table styling
                     if (currentContact && currentContact.id && currentContact.id !== e.id && currentContact.id.length > 0) {
                       document.getElementById(currentContact.id).classList.remove('is-selected');
+                      clearNewObject();
                       if (contactEditMode) {
-                        clearNewObject();
                         setContactEditMode(false);
                       }
                     }
@@ -259,6 +259,7 @@ export const Contacts = () => {
                       phoneNumber: newPhoneNumber,
                       orgId: newOrgId
                     }).then((r) => {
+                      clearNewObject();
                       setCurrentContact(r.data);
                       setDetailLoading(false);
                       refreshContactTable(false);

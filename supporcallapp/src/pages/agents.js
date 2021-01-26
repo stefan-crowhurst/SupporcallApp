@@ -79,8 +79,8 @@ export const Agents = () => {
                     // update table styling
                     if (currentAgent && currentAgent.id && currentAgent.id !== e.id && currentAgent.id.length > 0) {
                       document.getElementById(currentAgent.id).classList.remove('is-selected');
+                      clearNewObject();
                       if (agentEditMode) {
-                        clearNewObject();
                         setAgentEditMode(false);
                       }
                     }
@@ -221,7 +221,6 @@ export const Agents = () => {
                 <div class="column">
                   <div class="checkbox">
                   <input type="checkbox" checked={newAdmin} onChange={(e) => {
-                    console.log(e);
                     setNewAdmin(e.target.checked);
                   }} />
                   </div>
@@ -234,8 +233,7 @@ export const Agents = () => {
                     setDetailLoading(true);
                     setAgentCreateMode(false);
                     let byteConvertAdmin = 0;
-                    if (newAdmin)
-                    {
+                    if (newAdmin) {
                       byteConvertAdmin = 1;
                     }
                     await axios.post("https://supporcallapi.azurewebsites.net/api/Agents", {
@@ -258,8 +256,7 @@ export const Agents = () => {
                     setDetailLoading(true);
                     setAgentEditMode(false);
                     let byteConvertAdmin = 0;
-                    if (newAdmin)
-                    {
+                    if (newAdmin) {
                       byteConvertAdmin = 1;
                     }
                     await axios.post("https://supporcallapi.azurewebsites.net/api/Agents/update", {
@@ -271,6 +268,7 @@ export const Agents = () => {
                       role: newRole,
                       admin: byteConvertAdmin
                     }).then((r) => {
+                      clearNewObject();
                       setCurrentAgent(r.data);
                       setDetailLoading(false);
                       refreshAgentTable(false);

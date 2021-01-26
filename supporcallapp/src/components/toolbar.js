@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import "../bstyles.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAddressBook, faChartLine, faChevronDown, faHome, faPhoneSquareAlt, faTicketAlt, faUserSecret } from '@fortawesome/free-solid-svg-icons';
+import { faAddressBook, faBuilding, faChartLine, faChevronDown, faHome, faPhoneSquareAlt, faTicketAlt, faUserSecret } from '@fortawesome/free-solid-svg-icons';
 
 const navBtnClass = "button is-light is-outlined is-inverted level-item";
 const navBtnStyle = {
@@ -32,6 +32,10 @@ export const Toolbar = () => {
           <Link to="/contacts" class={navBtnClass} style={navBtnStyle}>
             <span class="icon"><FontAwesomeIcon icon={faAddressBook} /></span>
             <span>Contacts</span>
+          </Link>
+          <Link to="/organisations" class={navBtnClass} style={navBtnStyle}>
+            <span class="icon"><FontAwesomeIcon  icon={faBuilding} /></span>
+            <span>Organisations</span>
           </Link>
           <Link to="/reports" class={navBtnClass} style={navBtnStyle}>
             <span class="icon"><FontAwesomeIcon  icon={faChartLine} /></span>

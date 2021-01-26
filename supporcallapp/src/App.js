@@ -7,6 +7,7 @@ import { Tickets } from "./pages/tickets";
 import { Agents } from "./pages/agents";
 import { Contacts } from "./pages/contacts";
 import { Reports } from "./pages/reports";
+import { Organisations } from "./pages/organisations";
 
 const App = () => {
   return (
@@ -29,6 +30,9 @@ const App = () => {
             </Route>
             <Route path="/reports">
               <Reports />
+            </Route>
+            <Route path="/organisations">
+              <Organisations />
             </Route>
             <Route path="/">
               <Home />
