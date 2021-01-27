@@ -10,7 +10,8 @@ export const Agents = () => {
   let [detailLoading, setDetailLoading] = useState(false);
   let [agentEditMode, setAgentEditMode] = useState(false);
   let [agentCreateMode, setAgentCreateMode] = useState(false);
-
+  let [isLoading, setIsLoading] = useState(true);
+  
   // react does not update the value props on html elements where the
   // value is set to a property of a stateful object, this means the form does
   // not update when using onChange/onInput. Since react doesn't support
@@ -21,7 +22,7 @@ export const Agents = () => {
   let [newEmail, setNewEmail] = useState("");
   let [newPassword, setNewPassword] = useState("");
   let [newRole, setNewRole] = useState("");
-  let [newAdmin, setNewAdmin] = useState(false); //TODO: js treats booleans kinda weird, need to check this works fine
+  let [newAdmin, setNewAdmin] = useState(false);
 
   useEffect(() => {
     refreshAgentTable();
@@ -37,6 +38,7 @@ export const Agents = () => {
   }
 
   async function refreshAgentTable(isdelete) {
+    setIsLoading(true);
     setAgentList([]); // this triggers the loading UI
     await axios.get("https://supporcallapi.azurewebsites.net/api/Agents").then((i) => {
       setAgentList(i.data);
@@ -44,6 +46,7 @@ export const Agents = () => {
       if (!isdelete && currentAgent && currentAgent.id.length > 0) {
         document.getElementById(currentAgent.id).classList.add('is-selected');
       }
+      setIsLoading(false);
     });
   }
 
@@ -54,6 +57,19 @@ export const Agents = () => {
       setCurrentAgent(a.data);
       setDetailLoading(false);
     });
+  }
+
+  function createAgentClickRoutine(e) {
+    e.preventDefault();
+    setAgentCreateMode(true);
+    // update table styling
+    if (currentAgent && currentAgent.id && currentAgent.id !== e.id && currentAgent.id.length > 0) {
+      document.getElementById(currentAgent.id).classList.remove('is-selected');
+      clearNewObject();
+      if (agentEditMode) {
+        setAgentEditMode(false);
+      }
+    }
   }
 
   return (
@@ -73,18 +89,7 @@ export const Agents = () => {
                   }}>
                     <span class="icon"><FontAwesomeIcon icon={faSync} /></span>
                   </button>
-                  <button class="button is-primary level-item" onClick={(e) => {
-                    e.preventDefault();
-                    setAgentCreateMode(true);
-                    // update table styling
-                    if (currentAgent && currentAgent.id && currentAgent.id !== e.id && currentAgent.id.length > 0) {
-                      document.getElementById(currentAgent.id).classList.remove('is-selected');
-                      clearNewObject();
-                      if (agentEditMode) {
-                        setAgentEditMode(false);
-                      }
-                    }
-                  }}>
+                  <button class="button is-primary level-item" onClick={(e) => createAgentClickRoutine(e)}>
                     <span class="icon"><FontAwesomeIcon icon={faPlus} /></span>
                     <span>Create</span>
                   </button>
@@ -132,10 +137,37 @@ export const Agents = () => {
                 </tbody>
               </table>
             </>
-          :
+          : isLoading ?
           <div style={{width:"100%", textAlign:"center"}}>
             <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
             <h3><b>Loading agents...</b></h3>
+          </div>
+          : !isLoading && agentList.length == 0 ?
+          <div style={{width:"100%"}}>
+            <div class="level">
+              <div class="level-left">
+                <h2 class="title is-4 level-item" style={{marginBottom:"0.4em"}}>All Agents</h2>
+              </div>
+              <div class="level-right">
+                <button class="button is-rounded is-light level-item" onClick={async (e) => {
+                  e.preventDefault(); // prevent page reload
+                  refreshAgentTable();
+                }}>
+                  <span class="icon"><FontAwesomeIcon icon={faSync} /></span>
+                </button>
+                <button class="button is-primary level-item" onClick={(e) => createAgentClickRoutine(e)}>
+                  <span class="icon"><FontAwesomeIcon icon={faPlus} /></span>
+                  <span>Create</span>
+                </button>
+              </div>
+            </div>
+            <div class="notification is-warning"><b>No agents to display, please create an agent to continue</b></div>
+          </div>
+          :
+          <div style={{width:"100%", textAlign:"center"}}>
+            <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
+            <h3><b>Attempting to load agents</b></h3>
+            <h3><b>An error may have occurred, please refresh the page or contact an administrator</b></h3>
           </div>}
         </div>
       </div>

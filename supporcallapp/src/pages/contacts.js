@@ -10,6 +10,7 @@ export const Contacts = () => {
   let [detailLoading, setDetailLoading] = useState(false);
   let [contactEditMode, setContactEditMode] = useState(false);
   let [contactCreateMode, setContactCreateMode] = useState(false);
+  let [isLoading, setIsLoading] = useState(true)
 
   // react does not update the value props on html elements where the
   // value is set to a property of a stateful object, this means the form does
@@ -37,6 +38,7 @@ export const Contacts = () => {
   }
 
   async function refreshContactTable(isdelete) {
+    setIsLoading(true);
     setContactList([]); // this triggers the loading UI
     await axios.get("https://supporcallapi.azurewebsites.net/api/Contacts").then((i) => {
       setContactList(i.data);
@@ -44,6 +46,7 @@ export const Contacts = () => {
       if (!isdelete && currentContact && currentContact.id.length > 0) {
         document.getElementById(currentContact.id).classList.add('is-selected');
       }
+      setIsLoading(false);
     });
   }
 
@@ -54,6 +57,19 @@ export const Contacts = () => {
       setCurrentContact(c.data);
       setDetailLoading(false);
     });
+  }
+
+  function createContactClickRoutine(e) {
+    e.preventDefault();
+    setContactCreateMode(true);
+    // update table styling
+    if (currentContact && currentContact.id && currentContact.id !== e.id && currentContact.id.length > 0) {
+      document.getElementById(currentContact.id).classList.remove('is-selected');
+      clearNewObject();
+      if (contactEditMode) {
+        setContactEditMode(false);
+      }
+    }
   }
 
   return (
@@ -73,18 +89,7 @@ export const Contacts = () => {
                   }}>
                     <span class="icon"><FontAwesomeIcon icon={faSync} /></span>
                   </button>
-                  <button class="button is-primary level-item" onClick={(e) => {
-                    e.preventDefault();
-                    setContactCreateMode(true);
-                    // update table styling
-                    if (currentContact && currentContact.id && currentContact.id !== e.id && currentContact.id.length > 0) {
-                      document.getElementById(currentContact.id).classList.remove('is-selected');
-                      clearNewObject();
-                      if (contactEditMode) {
-                        setContactEditMode(false);
-                      }
-                    }
-                  }}>
+                  <button class="button is-primary level-item" onClick={(e) => createContactClickRoutine(e)}>
                     <span class="icon"><FontAwesomeIcon icon={faPlus} /></span>
                     <span>Create</span>
                   </button>
@@ -132,10 +137,37 @@ export const Contacts = () => {
                 </tbody>
               </table>
             </>
-          :
+          : isLoading ?
           <div style={{width:"100%", textAlign:"center"}}>
             <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
             <h3><b>Loading contacts...</b></h3>
+          </div>
+          : !isLoading && contactList.length == 0 ?
+          <div style={{width:"100%"}}>
+            <div class="level">
+              <div class="level-left">
+                <h2 class="title is-4 level-item" style={{marginBottom:"0.4em"}}>All Contacts</h2>
+              </div>
+              <div class="level-right">
+                <button class="button is-rounded is-light level-item" onClick={async (e) => {
+                  e.preventDefault(); // prevent page reload
+                  refreshContactTable();
+                }}>
+                  <span class="icon"><FontAwesomeIcon icon={faSync} /></span>
+                </button>
+                <button class="button is-primary level-item" onClick={(e) => createContactClickRoutine(e)}>
+                  <span class="icon"><FontAwesomeIcon icon={faPlus} /></span>
+                  <span>Create</span>
+                </button>
+              </div>
+            </div>
+            <div class="notification is-warning"><b>No contacts to display, please create a contact to continue</b></div>
+          </div>
+          :
+          <div style={{width:"100%", textAlign:"center"}}>
+            <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
+            <h3><b>Attempting to load contacts</b></h3>
+            <h3><b>An error may have occurred, please refresh the page or contact an administrator</b></h3>
           </div>}
         </div>
       </div>
