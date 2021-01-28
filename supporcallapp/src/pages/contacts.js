@@ -142,7 +142,7 @@ export const Contacts = () => {
             <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
             <h3><b>Loading contacts...</b></h3>
           </div>
-          : !isLoading && contactList.length == 0 ?
+          : !isLoading && contactList.length === 0 ?
           <div style={{width:"100%"}}>
             <div class="level">
               <div class="level-left">

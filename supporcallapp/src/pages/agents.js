@@ -142,7 +142,7 @@ export const Agents = () => {
             <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
             <h3><b>Loading agents...</b></h3>
           </div>
-          : !isLoading && agentList.length == 0 ?
+          : !isLoading && agentList.length === 0 ?
           <div style={{width:"100%"}}>
             <div class="level">
               <div class="level-left">

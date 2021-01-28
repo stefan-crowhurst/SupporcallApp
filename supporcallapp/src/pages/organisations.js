@@ -138,7 +138,7 @@ export const Organisations = () => {
             <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
             <h3><b>Loading organisations...</b></h3>
           </div>
-          : !isLoading && organisationList.length == 0 ?
+          : !isLoading && organisationList.length === 0 ?
           <div style={{width:"100%"}}>
             <div class="level">
               <div class="level-left">

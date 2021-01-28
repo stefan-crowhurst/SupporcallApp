@@ -73,7 +73,7 @@ export const TicketTable = () => {
                   <td>{e.priority}</td>
                   <td>{e.status}</td>
                   <td>{e.agentId}</td>
-                  <td>{moment(e.lastUpdated).format("HH:mm DD/MM/YY")}</td>
+                  <td><b>{moment(e.lastUpdatedAt).format("HH:mm DD/MM/YY")}</b></td>
                   <td><FontAwesomeIcon icon={e.slaMet ? faCheck : faTimes} /></td>
                 </tr>
               )}
@@ -85,7 +85,7 @@ export const TicketTable = () => {
         <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
         <h3><b>Loading tickets...</b></h3>
       </div>
-      : !isLoading && ticketList.length == 0 ?
+      : !isLoading && ticketList.length === 0 ?
       <div style={{width:"100%"}}>
         <div class="level">
           <div class="level-left">
