@@ -10,7 +10,8 @@ export const Contacts = () => {
   let [detailLoading, setDetailLoading] = useState(false);
   let [contactEditMode, setContactEditMode] = useState(false);
   let [contactCreateMode, setContactCreateMode] = useState(false);
-  let [isLoading, setIsLoading] = useState(true)
+  let [isLoading, setIsLoading] = useState(true);
+  let [orgSummary, setOrgSummary] = useState([]);
 
   // react does not update the value props on html elements where the
   // value is set to a property of a stateful object, this means the form does
@@ -26,6 +27,7 @@ export const Contacts = () => {
 
   useEffect(() => {
     refreshContactTable();
+    updateSummaries();
   }, []);
 
   function clearNewObject() {
@@ -70,6 +72,12 @@ export const Contacts = () => {
         setContactEditMode(false);
       }
     }
+  }
+
+  async function updateSummaries() {
+    await axios.get("https://supporcallapi.azurewebsites.net/api/Organisations/summaries").then((r) => {
+      setOrgSummary(r.data);
+    });
   }
 
   return (
@@ -251,10 +259,16 @@ export const Contacts = () => {
                   <span>Organisation</span>
                 </div>
                 <div class="column">
-                  {/* TODO: Change this into a dropdown once the API is available */}
-                  <input class="input" type="text" value={newOrgId} onChange={(e) => {
-                    setNewOrgId(e.target.value);
-                  }} />
+                  <div class="select" style={{width:"100%"}}>
+                    <select style={{width:"100%"}} onChange={(e) => {
+                      setNewOrgId(e.target.value);
+                    }}>
+                      <option value="" style={{display:"none"}} disabled selected>Select Organisation</option>
+                      {orgSummary.map((i) => 
+                        <option value={i.id}>{i.name}</option>
+                      )}
+                    </select>
+                  </div>
                 </div>
               </div>
               <div style={{width:"100%", textAlign:"center"}}>
