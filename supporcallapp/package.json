@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@creativebulma/bulma-tagsinput": "^1.0.3",
     "@fortawesome/fontawesome-svg-core": "^1.2.34",
     "@fortawesome/free-solid-svg-icons": "^5.15.2",
     "@fortawesome/react-fontawesome": "^0.1.14",
@@ -11,6 +12,7 @@
     "@testing-library/user-event": "^12.6.0",
     "axios": "^0.21.1",
     "bulma": "^0.9.1",
+    "bulma-slider": "^2.0.4",
     "moment": "^2.29.1",
     "node-sass": "^4.14.1",
     "react": "^17.0.1",
