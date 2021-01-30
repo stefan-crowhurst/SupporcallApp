@@ -1,14 +1,16 @@
-import { useParams } from "react-router-dom";
+import { useParams, useRouteMatch, useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTimes, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
 export const TicketDetailsView = () => {
   const { ticketid } = useParams();
   let [ticket, setTicket] = useState();
   let [detailLoading, setDetailLoading] = useState(true);
+  let match = useRouteMatch();
+  const history = useHistory();
 
   useEffect(() => {
     refreshTicketDetails();
@@ -26,13 +28,28 @@ export const TicketDetailsView = () => {
     <div class="box">
       <div class="level">
         <div class="level-left">
-          <h2 class="level-item title is-4">Ticket Details:</h2>
+          <div class="level-item">
+            <div class="tile is-parent is-vertical">
+              <div class="tile is-12">
+                <h2 class="title is-4">Ticket Details:</h2>
+              </div>
+              <div class="tile is-12">
+                <div class="subtitle is-6">
+                  {detailLoading ? <>Loading...</> :
+                    <>Ticket last updated: {moment(ticket.lastUpdatedAt).format("HH:mm DD/MM/YY")}</>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="level-right">
-          {detailLoading ? <></> :
-            <b>Ticket last updated: {moment(ticket.lastUpdatedAt).format("HH:mm DD/MM/YY")}</b>
-          }
-          {/* TODO: Edit button here? */}
+          <button class="button is-rounded is-light level-item" onClick={(e) => {
+            e.preventDefault();
+            history.push(match.url.replace(`${ticketid}`, `edit/${ticketid}`));
+          }}>
+            <span class="icon"><FontAwesomeIcon icon={faPencilAlt} /></span>
+          </button>
         </div>
       </div>
       {detailLoading ?
