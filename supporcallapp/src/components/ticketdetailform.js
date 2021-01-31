@@ -94,7 +94,8 @@ export const TicketDetailForm = (props) => {
 
   return(
     <>
-      <h2 class="title is-4" style={{marginBottom:"1.2em"}}>{props.mode === "create" ? <>Creating Ticket </> : props.mode === "edit" ? <>Editing Ticket {ticketid}</> : <>Erroneous Path</>}</h2>
+      <h2 class="title is-4">{props.mode === "create" ? <>Creating Ticket </> : props.mode === "edit" ? <>Editing Ticket {ticketid}</> : <>Erroneous Path</>}</h2>
+      {props.mode === "edit" && !isLoading ? <h2 class="subtitle is-6">Ticket last updated at: {moment(lastUpdatedAt).format("HH:mm DD/MM/YY")}</h2> : <></>}
       {isLoading ? 
         <div style={{width:"100%", textAlign:"center"}}>
           <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
@@ -217,7 +218,6 @@ export const TicketDetailForm = (props) => {
           </div>
           <div class="column">
             <input id="labelstags" class="input" type="tags" placeholder="Enter label followed by comma" value={labels} />
-            <>{labels}</>
           </div>
         </div>
         {props.mode === "edit" ?
