@@ -227,9 +227,9 @@ export const TicketDetailForm = (props) => {
             </div>
             <div class="column">
               <div class="checkbox">
-              <input type="checkbox" checked={slaMet} onChange={(e) => {
-                setSlaMet(e.target.checked);
-              }} />
+                <input type="checkbox" checked={slaMet} onChange={(e) => {
+                  setSlaMet(e.target.checked);
+                }} />
               </div>
             </div>
           </div>

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faTimes, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTimes, faPencilAlt, faSync } from '@fortawesome/free-solid-svg-icons';
 
 export const TicketDetailsView = () => {
   const { ticketid } = useParams();
@@ -44,6 +44,12 @@ export const TicketDetailsView = () => {
           </div>
         </div>
         <div class="level-right">
+          <button class="button is-rounded is-light level-item" onClick={(e) => {
+            e.preventDefault();
+            refreshTicketDetails();
+          }}>
+            <span class="icon"><FontAwesomeIcon icon={faSync} /></span>
+          </button>
           <button class="button is-rounded is-light level-item" onClick={(e) => {
             e.preventDefault();
             history.push(match.url.replace(`${ticketid}`, `edit/${ticketid}`));

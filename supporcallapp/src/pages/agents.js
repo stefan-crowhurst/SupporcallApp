@@ -252,9 +252,9 @@ export const Agents = () => {
                 </div>
                 <div class="column">
                   <div class="checkbox">
-                  <input type="checkbox" checked={newAdmin} onChange={(e) => {
-                    setNewAdmin(e.target.checked);
-                  }} />
+                    <input type="checkbox" checked={newAdmin} onChange={(e) => {
+                      setNewAdmin(e.target.checked);
+                    }} />
                   </div>
                 </div>
               </div>

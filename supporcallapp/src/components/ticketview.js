@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { ResponsesView } from "./responsesview";
+import { RepliesView } from "./repliesview";
 import { TicketDetailsView } from "./ticketdetailsview";
 
 export const TicketView = () => {
@@ -19,7 +19,7 @@ export const TicketView = () => {
           <TicketDetailsView />
         </div>
         <div class="column">
-          <ResponsesView />
+          <RepliesView />
         </div>
       </div>
     </>
