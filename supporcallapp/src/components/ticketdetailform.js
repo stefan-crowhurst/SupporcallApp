@@ -222,7 +222,7 @@ export const TicketDetailForm = (props) => {
         </div>
         {props.mode === "edit" ?
           <div class="columns">
-            <div class="column is-one-quarter">
+            <div class="column is-2">
               <span><abbr title="If agreed with client">SLA Met?</abbr></span>
             </div>
             <div class="column">
@@ -235,7 +235,7 @@ export const TicketDetailForm = (props) => {
           </div>
         : props.mode === "create" ?
           <div class="columns">
-            <div class="column is-one-quarter">
+            <div class="column is-2">
               <span><abbr title="Is there an SLA agreement with the client?">SLA Agreed?</abbr></span>
             </div>
             <div class="column">
@@ -251,10 +251,6 @@ export const TicketDetailForm = (props) => {
           {props.mode === "create" ? 
             <button class="button is-primary" style={{margin:"0.4em"}} onClick={async (e) => {
               e.preventDefault();
-              let byteSlaMetConvert = null;
-              if (slaMet) {
-                byteSlaMetConvert = 0;
-              }
               await axios.post("https://supporcallapi.azurewebsites.net/api/Tickets", {
                 title: title,
                 status: status,
@@ -264,7 +260,7 @@ export const TicketDetailForm = (props) => {
                 priority: priority,
                 complexity: complexity,
                 labels: labels,
-                slaMet: byteSlaMetConvert
+                slaMet: slaMet ? 0 : null
               }).then((r) => {
                 clearObjects();
                 history.push(match.url.replace("create", r.data.id));
@@ -273,10 +269,6 @@ export const TicketDetailForm = (props) => {
           : props.mode === "edit" ?
           <button class="button is-primary" style={{margin:"0.4em"}} onClick={async (e) => {
             e.preventDefault();
-            let byteSlaMetConvert = 0;
-            if (slaMet) {
-              byteSlaMetConvert = 1;
-            }
             await axios.post("https://supporcallapi.azurewebsites.net/api/Tickets/update", {
               id: ticketid,
               title: title,
@@ -287,7 +279,7 @@ export const TicketDetailForm = (props) => {
               priority: priority,
               complexity: complexity,
               labels: labels,
-              slaMet: byteSlaMetConvert
+              slaMet: slaMet ? 1 : 0
             }).then(() => {
               clearObjects();
               history.push(match.url.replace("/edit", ""));

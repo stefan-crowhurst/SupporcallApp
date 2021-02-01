@@ -29,7 +29,7 @@ export const TicketDetailsView = () => {
       <div class="level">
         <div class="level-left">
           <div class="level-item">
-            <div class="tile is-parent is-vertical">
+            <div class="tile is-parent is-vertical" style={{padding:0}}>
               <div class="tile is-12">
                 <h2 class="title is-4">Ticket Details:</h2>
               </div>

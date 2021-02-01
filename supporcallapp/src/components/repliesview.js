@@ -1,4 +1,4 @@
-import { faSync } from "@fortawesome/free-solid-svg-icons";
+import { faReply, faSync } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -10,6 +10,10 @@ export const RepliesView = () => {
   let [responses, setResponses] = useState([]);
   let [isLoading, setIsLoading] = useState(true);
   let [isInternalNote, setIsInternalNote] = useState(false);
+  let agentId = "A0"; // TODO: Once login is implemented this must be refactored to use the logged in user ID
+  const contactAddress = "Supporcall App";
+  let [ticketReplyContent, setTicketReplyContent] = useState("");
+  let [ticketReplyType, setTicketReplyType] = useState("Email");
 
   useEffect(() => {
     refreshResponses();
@@ -65,20 +69,39 @@ export const RepliesView = () => {
           <h3><b>No responses found</b></h3>
         </div>
       }
-      <div class="box">
+      <div style={{padding:"1.25rem"}}>
         <div class="level">
           <div class="level-left">
             <h3 class="title is-5">Add a reply</h3>
           </div>
-          <div class="level-right">
-            <div class="checkbox">
-              <input type="checkbox" id="internalnotecheck" checked={isInternalNote} onChange={(e) => {
-                setIsInternalNote(e.target.checked);
-              }} />
-              <label for="internalnotecheck" style={{marginLeft:"0.5em"}}>Make internal note?</label>
-            </div>
+        </div>
+        <textarea class="textarea" placeholder="Write your reply here..." style={{marginBottom:"1em"}} value={ticketReplyContent} onChange={(e) => setTicketReplyContent(e.target.value)} />
+        <div style={{display:"flex", justifyContent:"flex-end", alignItems:"center", width:"100%"}}>
+          <div class="checkbox" style={{paddingRight:"2em"}}>
+            <input type="checkbox" id="internalnotecheck" checked={isInternalNote} onChange={(e) => {
+              setIsInternalNote(e.target.checked);
+            }} />
+            <label for="internalnotecheck" style={{marginLeft:"0.5em"}}>Make internal note?</label>
           </div>
-          {/* TODO: Add stateful fields, button and method to post reply to DB */}
+          <button class="button is-primary" onClick={(e) => {
+            e.preventDefault();
+            axios.post(`https://supporcallapi.azurewebsites.net/api/Tickets/replies/${ticketid}`, {
+              replierId: agentId,
+              replyContent: ticketReplyContent,
+              contactAddress: contactAddress,
+              internalNote: isInternalNote ? 1 : 0,
+              replyType: ticketReplyType
+            }).then(() => {
+              refreshResponses();
+              setTicketReplyContent("");
+              setIsInternalNote(false);
+            });
+          }}>
+            <span class="icon">
+              <FontAwesomeIcon icon={faReply} />
+            </span>
+            <span>Reply</span>
+          </button>
         </div>
       </div>
     </div>

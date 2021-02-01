@@ -240,15 +240,11 @@ export const Organisations = () => {
                     e.preventDefault();
                     setDetailLoading(true);
                     setOrganisationCreateMode(false);
-                    let byteConvertSLA = 0;
-                    if (newSLA) {
-                      byteConvertSLA = 1;
-                    }
                     await axios.post("https://supporcallapi.azurewebsites.net/api/Organisations", {
                       name: newName,
                       email: newEmail,
                       phoneNumber: newPhoneNumber,
-                      sla: byteConvertSLA
+                      sla: newSLA ? 1 : 0
                     }).then(() => {
                       setDetailLoading(false);
                       refreshOrganisationTable(false);
@@ -261,16 +257,12 @@ export const Organisations = () => {
                     e.preventDefault(); // prevent page reload
                     setDetailLoading(true);
                     setOrganisationEditMode(false);
-                    let byteConvertSLA = 0;
-                    if (newSLA) {
-                      byteConvertSLA = 1;
-                    }
                     await axios.post("https://supporcallapi.azurewebsites.net/api/Organisations/update", {
                       id : currentOrganisation.id,
                       name: newName,
                       email: newEmail,
                       phoneNumber: newPhoneNumber,
-                      sla: byteConvertSLA
+                      sla: newSLA ? 1 : 0
                     }).then((r) => {
                       clearNewObject();
                       setCurrentOrganisation(r.data);

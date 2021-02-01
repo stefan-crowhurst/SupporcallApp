@@ -264,17 +264,13 @@ export const Agents = () => {
                     e.preventDefault();
                     setDetailLoading(true);
                     setAgentCreateMode(false);
-                    let byteConvertAdmin = 0;
-                    if (newAdmin) {
-                      byteConvertAdmin = 1;
-                    }
                     await axios.post("https://supporcallapi.azurewebsites.net/api/Agents", {
                       forename: newForename,
                       surname: newSurname,
                       email: newEmail,
                       password: newPassword,
                       role: newRole,
-                      admin: byteConvertAdmin
+                      admin: newAdmin ? 1 : 0
                     }).then(() => {
                       setDetailLoading(false);
                       refreshAgentTable(false);
@@ -287,10 +283,6 @@ export const Agents = () => {
                     e.preventDefault(); // prevent page reload
                     setDetailLoading(true);
                     setAgentEditMode(false);
-                    let byteConvertAdmin = 0;
-                    if (newAdmin) {
-                      byteConvertAdmin = 1;
-                    }
                     await axios.post("https://supporcallapi.azurewebsites.net/api/Agents/update", {
                       id : currentAgent.id,
                       forename: newForename,
@@ -298,7 +290,7 @@ export const Agents = () => {
                       email: newEmail,
                       password: newPassword,
                       role: newRole,
-                      admin: byteConvertAdmin
+                      admin: newAdmin ? 1 : 0
                     }).then((r) => {
                       clearNewObject();
                       setCurrentAgent(r.data);
