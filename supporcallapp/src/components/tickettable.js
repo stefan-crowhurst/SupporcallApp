@@ -58,6 +58,7 @@ export const TicketTable = () => {
                 <th>Status</th>
                 <th>Agent</th>
                 <th><abbr title="Time last updated">Updated</abbr></th>
+                <th>Replies</th>
                 <th><abbr title="SLA Met?">SLA?</abbr></th>
               </tr>
             </thead>
@@ -74,6 +75,7 @@ export const TicketTable = () => {
                   <td>{e.status}</td>
                   <td>{e.agentId}</td>
                   <td><b>{moment(e.lastUpdatedAt).format("HH:mm DD/MM/YY")}</b></td>
+                  <td>{e.replyCount}</td>
                   <td><FontAwesomeIcon icon={e.slaMet && e.slaMet === 1 ? faCheck : faTimes} /></td>
                 </tr>
               )}
