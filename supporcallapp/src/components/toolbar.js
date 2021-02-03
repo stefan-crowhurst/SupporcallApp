@@ -1,8 +1,9 @@
-import React from 'react';
-import { Link } from "react-router-dom";
+import React, { useContext } from 'react';
+import { Link, useHistory, useRouteMatch } from "react-router-dom";
 import "../bstyles.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAddressBook, faBuilding, faChartLine, faChevronDown, faHome, faPhoneSquareAlt, faTicketAlt, faUserSecret } from '@fortawesome/free-solid-svg-icons';
+import { Context } from '../store';
 
 const navBtnClass = "button is-light is-outlined is-inverted level-item";
 const navBtnStyle = {
@@ -12,6 +13,10 @@ const navBtnStyle = {
 };
 
 export const Toolbar = () => {
+  const [store, dispatch] = useContext(Context);
+  let match = useRouteMatch();
+  const history = useHistory();
+
   return (
     <>
       <nav class="level is-mobile" style={{borderBottom:"1px solid #CCCCCC"}}> {/*need to update this if the $border colour is updated at a later date*/}
@@ -43,6 +48,7 @@ export const Toolbar = () => {
           </Link>
         </div>
         <div class="level-right">
+          <span>{store.isLoggedIn ? <>logged in</> : <></>}{store.isAdminLoggedIn ? <>admin</> : <></>}{store.loggedinAgentId}</span>
           <div class={navBtnClass} style={navBtnStyle}><span class="icon"><FontAwesomeIcon size="lg" icon={faPhoneSquareAlt} /></span></div>
           <div class="dropdown is-hoverable">
             <div class="dropdown-trigger">
@@ -62,7 +68,14 @@ export const Toolbar = () => {
               </div>
             </div>
           </div>
-          <div class="level-item button is-primary" style={navBtnStyle}>Log in</div>
+          {store.loggedIn ?
+            <button class="button is-primary" onClick={(e) => {
+              dispatch({type: "LOGGED_OUT"});
+              history.push(`${match.url}`);
+            }}>Log Out</button>
+          :
+            <Link to="/login" class="level-item button is-primary" style={navBtnStyle}>Log in</Link>
+          }
         </div>
       </nav>
     </>

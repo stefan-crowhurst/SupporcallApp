@@ -8,10 +8,12 @@ import { Agents } from "./pages/agents";
 import { Contacts } from "./pages/contacts";
 import { Reports } from "./pages/reports";
 import { Organisations } from "./pages/organisations";
+import { Login } from "./pages/login";
+import { Store } from "./store";
 
 const App = () => {
   return (
-    <div>
+    <Store>
       <Router>
         <div style={{width: "100%"}}>
           <Toolbar />
@@ -34,13 +36,16 @@ const App = () => {
             <Route path="/organisations">
               <Organisations />
             </Route>
+            <Route path="/login">
+              <Login />
+            </Route>
             <Route path="/">
               <Home />
             </Route>
           </Switch>
         </div>
       </Router>
-    </div>
+    </Store>
   );
 }
 
