@@ -1,50 +1,12 @@
-import React from 'react';
-import { Toolbar } from "./components/toolbar";
+import React, { useContext } from 'react';
 import "./bstyles.scss";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { Home } from "./pages/home";
-import { Tickets } from "./pages/tickets";
-import { Agents } from "./pages/agents";
-import { Contacts } from "./pages/contacts";
-import { Reports } from "./pages/reports";
-import { Organisations } from "./pages/organisations";
-import { Login } from "./pages/login";
+import Main from "./Main";
 import { Store } from "./store";
 
 const App = () => {
   return (
     <Store>
-      <Router>
-        <div style={{width: "100%"}}>
-          <Toolbar />
-        </div>
-
-        <div style={{width:"100%", paddingLeft:"0.5%", paddingRight:"0.5%", paddingTop:"0.25%"}}>
-          <Switch>
-            <Route path="/tickets">
-              <Tickets />
-            </Route>
-            <Route path="/agents">
-              <Agents />
-            </Route>
-            <Route path="/contacts">
-              <Contacts />
-            </Route>
-            <Route path="/reports">
-              <Reports />
-            </Route>
-            <Route path="/organisations">
-              <Organisations />
-            </Route>
-            <Route path="/login">
-              <Login />
-            </Route>
-            <Route path="/">
-              <Home />
-            </Route>
-          </Switch>
-        </div>
-      </Router>
+      <Main />
     </Store>
   );
 }

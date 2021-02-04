@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import "../bstyles.scss";
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencilAlt, faPlus, faSync, faTrashAlt, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { Context } from '../store';
 
 export const Organisations = () => {
   let [organisationList, setOrganisationList] = useState([]);
@@ -21,6 +22,8 @@ export const Organisations = () => {
   let [newEmail, setNewEmail] = useState("");
   let [newPhoneNumber, setNewPhoneNumber] = useState("");
   let [newSLA, setNewSLA] = useState(false);
+  
+  const [store, dispatch] = useContext(Context);
 
   useEffect(() => {
     refreshOrganisationTable();
@@ -244,7 +247,8 @@ export const Organisations = () => {
                       name: newName,
                       email: newEmail,
                       phoneNumber: newPhoneNumber,
-                      sla: newSLA ? 1 : 0
+                      sla: newSLA ? 1 : 0,
+                      requesterId: store.loggedInAgentId
                     }).then(() => {
                       setDetailLoading(false);
                       refreshOrganisationTable(false);
@@ -262,7 +266,8 @@ export const Organisations = () => {
                       name: newName,
                       email: newEmail,
                       phoneNumber: newPhoneNumber,
-                      sla: newSLA ? 1 : 0
+                      sla: newSLA ? 1 : 0,
+                      requesterId: store.loggedInAgentId
                     }).then((r) => {
                       clearNewObject();
                       setCurrentOrganisation(r.data);
@@ -296,7 +301,7 @@ export const Organisations = () => {
                   </button>
                   <button class="button is-rounded is-light level-item" onClick={async (e) => {
                     e.preventDefault(); // prevent page reload
-                    await axios.delete("https://supporcallapi.azurewebsites.net/api/Organisations/" + currentOrganisation.id).then(() => {
+                    await axios.delete(`https://supporcallapi.azurewebsites.net/api/Organisations/${store.loggedInAgentId}/${currentOrganisation.id}`).then(() => {
                       setCurrentOrganisation();
                       refreshOrganisationTable(true);
                     });

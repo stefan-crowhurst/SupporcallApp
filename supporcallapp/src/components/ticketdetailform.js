@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import moment from "moment";
 import axios from "axios";
 import BulmaTagsInput from '@creativebulma/bulma-tagsinput';
 import { useParams, useRouteMatch, useHistory } from "react-router-dom";
+import { Context } from '../store';
 
 export const TicketDetailForm = (props) => {
   const { ticketid } = useParams();
@@ -23,6 +24,8 @@ export const TicketDetailForm = (props) => {
   let match = useRouteMatch();
   const history = useHistory();
   let [isLoading, setIsLoading] = useState(false);
+  
+  const [store, dispatch] = useContext(Context);
 
   useEffect(() => {
     clearObjects();
@@ -260,7 +263,8 @@ export const TicketDetailForm = (props) => {
                 priority: priority,
                 complexity: complexity,
                 labels: labels,
-                slaMet: slaMet ? 0 : null
+                slaMet: slaMet ? 0 : null,
+                requesterId: store.loggedInAgentId
               }).then((r) => {
                 clearObjects();
                 history.push(match.url.replace("create", r.data.id));
@@ -279,7 +283,8 @@ export const TicketDetailForm = (props) => {
               priority: priority,
               complexity: complexity,
               labels: labels,
-              slaMet: slaMet ? 1 : 0
+              slaMet: slaMet ? 1 : 0,
+              requesterId: store.loggedInAgentId
             }).then(() => {
               clearObjects();
               history.push(match.url.replace("/edit", ""));

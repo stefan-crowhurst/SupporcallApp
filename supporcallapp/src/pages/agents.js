@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import "../bstyles.scss";
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faPencilAlt, faPlus, faSync, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { Context } from '../store';
 
 export const Agents = () => {
   let [agentList, setAgentList] = useState([]);
@@ -23,6 +24,8 @@ export const Agents = () => {
   let [newPassword, setNewPassword] = useState("");
   let [newRole, setNewRole] = useState("");
   let [newAdmin, setNewAdmin] = useState(false);
+  
+  const [store, dispatch] = useContext(Context);
 
   useEffect(() => {
     refreshAgentTable();
@@ -270,7 +273,8 @@ export const Agents = () => {
                       email: newEmail,
                       password: newPassword,
                       role: newRole,
-                      admin: newAdmin ? 1 : 0
+                      admin: newAdmin ? 1 : 0,
+                      requesterId: store.loggedInAgentId
                     }).then(() => {
                       setDetailLoading(false);
                       refreshAgentTable(false);
@@ -290,7 +294,8 @@ export const Agents = () => {
                       email: newEmail,
                       password: newPassword,
                       role: newRole,
-                      admin: newAdmin ? 1 : 0
+                      admin: newAdmin ? 1 : 0,
+                      requesterId: store.loggedInAgentId
                     }).then((r) => {
                       clearNewObject();
                       setCurrentAgent(r.data);
@@ -326,7 +331,7 @@ export const Agents = () => {
                   </button>
                   <button class="button is-rounded is-light level-item" onClick={async (e) => {
                     e.preventDefault(); // prevent page reload
-                    await axios.delete("https://supporcallapi.azurewebsites.net/api/Agents/" + currentAgent.id).then(() => {
+                    await axios.delete(`https://supporcallapi.azurewebsites.net/api/Agents/${store.loggedInAgentId}/${currentAgent.id}`).then(() => {
                       setCurrentAgent();
                       refreshAgentTable(true);
                     });

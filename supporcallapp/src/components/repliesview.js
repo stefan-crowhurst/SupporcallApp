@@ -1,9 +1,10 @@
 import { faReply, faSync } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import moment from "moment";
+import { Context } from '../store';
 
 export const RepliesView = () => {
   const { ticketid } = useParams();
@@ -14,6 +15,8 @@ export const RepliesView = () => {
   const contactAddress = "Supporcall App";
   let [ticketReplyContent, setTicketReplyContent] = useState("");
   let [ticketReplyType, setTicketReplyType] = useState("Email");
+  
+  const [store, dispatch] = useContext(Context);
 
   useEffect(() => {
     refreshResponses();
@@ -90,7 +93,8 @@ export const RepliesView = () => {
               replyContent: ticketReplyContent,
               contactAddress: contactAddress,
               internalNote: isInternalNote ? 1 : 0,
-              replyType: ticketReplyType
+              replyType: ticketReplyType,
+              requesterId: store.loggedInAgentId
             }).then(() => {
               refreshResponses();
               setTicketReplyContent("");

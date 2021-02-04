@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import "../bstyles.scss";
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencilAlt, faPlus, faSync, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { Context } from '../store';
 
 export const Contacts = () => {
   let [contactList, setContactList] = useState([]);
@@ -24,6 +25,8 @@ export const Contacts = () => {
   let [newEmail, setNewEmail] = useState("");
   let [newPhoneNumber, setNewPhoneNumber] = useState("");
   let [newOrgId, setNewOrgId] = useState("");
+  
+  const [store, dispatch] = useContext(Context);
 
   useEffect(() => {
     refreshContactTable();
@@ -283,7 +286,8 @@ export const Contacts = () => {
                       role: newRole,
                       email: newEmail,
                       phoneNumber: newPhoneNumber,
-                      orgId: newOrgId
+                      orgId: newOrgId,
+                      requesterId: store.loggedInAgentId
                     }).then(() => {
                       setDetailLoading(false);
                       refreshContactTable(false);
@@ -303,7 +307,8 @@ export const Contacts = () => {
                       role: newRole,
                       email: newEmail,
                       phoneNumber: newPhoneNumber,
-                      orgId: newOrgId
+                      orgId: newOrgId,
+                      requesterId: store.loggedInAgentId
                     }).then((r) => {
                       clearNewObject();
                       setCurrentContact(r.data);
@@ -339,7 +344,7 @@ export const Contacts = () => {
                   </button>
                   <button class="button is-rounded is-light level-item" onClick={async (e) => {
                     e.preventDefault(); // prevent page reload
-                    await axios.delete("https://supporcallapi.azurewebsites.net/api/Contacts/" + currentContact.id).then(() => {
+                    await axios.delete(`https://supporcallapi.azurewebsites.net/api/Contacts/${store.loggedInAgentId}/${currentContact.id}`).then(() => {
                       setCurrentContact();
                       refreshContactTable(true);
                     });

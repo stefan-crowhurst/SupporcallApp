@@ -38,9 +38,9 @@ export const Login = () => {
             if (r.status === 200) {
               dispatch({type: "LOGGED_IN", payload: {loggedInAgentId: r.data.agentId, isAdminLoggedIn: r.data.isAdmin}});
               history.push(`${match.url.replace("login", "")}`);
-            } else {
-              alert("Login details provided invalid, please try again");
             }
+          }).catch(() => {
+            alert("Login not completed, please check your details and try again");
           });
         }}>Log In</button>
       </div>

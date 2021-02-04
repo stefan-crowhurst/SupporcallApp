@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Link, useHistory, useRouteMatch } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "../bstyles.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAddressBook, faBuilding, faChartLine, faChevronDown, faHome, faPhoneSquareAlt, faTicketAlt, faUserSecret } from '@fortawesome/free-solid-svg-icons';
@@ -14,9 +14,6 @@ const navBtnStyle = {
 
 export const Toolbar = () => {
   const [store, dispatch] = useContext(Context);
-  let match = useRouteMatch();
-  const history = useHistory();
-
   return (
     <>
       <nav class="level is-mobile" style={{borderBottom:"1px solid #CCCCCC"}}> {/*need to update this if the $border colour is updated at a later date*/}
@@ -48,30 +45,33 @@ export const Toolbar = () => {
           </Link>
         </div>
         <div class="level-right">
-          <span>{store.isLoggedIn ? <>logged in</> : <></>}{store.isAdminLoggedIn ? <>admin</> : <></>}{store.loggedinAgentId}</span>
-          <div class={navBtnClass} style={navBtnStyle}><span class="icon"><FontAwesomeIcon size="lg" icon={faPhoneSquareAlt} /></span></div>
-          <div class="dropdown is-hoverable">
-            <div class="dropdown-trigger">
-              <button class={navBtnClass} aria-haspopup="true" aria-controls="status-dropdown" style={navBtnStyle}>
-                <span>Status</span> {/*this should probably show the current status with an icon when that feature is implemented*/}
-                <span class="icon"><FontAwesomeIcon icon={faChevronDown} /></span>
-              </button>
-            </div>
-            <div class="dropdown-menu" id="status-dropdown" role="menu">
-              <div class="dropdown-content">
-                {/*eslint-disable-next-line*/}
-                <a class="dropdown-item">Available</a>
-                {/*eslint-disable-next-line*/}
-                <a class="dropdown-item">Unavailable</a>
-                {/*eslint-disable-next-line*/}
-                <a class="dropdown-item">Offline</a>
+          {store.loggedIn ? 
+            <>
+              <div class={navBtnClass} style={navBtnStyle}><span class="icon"><FontAwesomeIcon size="lg" icon={faPhoneSquareAlt} /></span></div>
+              <div class="dropdown is-hoverable">
+                <div class="dropdown-trigger">
+                  <button class={navBtnClass} aria-haspopup="true" aria-controls="status-dropdown" style={navBtnStyle}>
+                    <span>Status</span> {/*this should probably show the current status with an icon when that feature is implemented*/}
+                    <span class="icon"><FontAwesomeIcon icon={faChevronDown} /></span>
+                  </button>
+                </div>
+                <div class="dropdown-menu" id="status-dropdown" role="menu">
+                  <div class="dropdown-content">
+                    {/*eslint-disable-next-line*/}
+                    <a class="dropdown-item">Available</a>
+                    {/*eslint-disable-next-line*/}
+                    <a class="dropdown-item">Unavailable</a>
+                    {/*eslint-disable-next-line*/}
+                    <a class="dropdown-item">Offline</a>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            </>
+          : <></>}
           {store.loggedIn ?
-            <button class="button is-primary" onClick={(e) => {
+            <button class="button is-primary" onClick={() => {
               dispatch({type: "LOGGED_OUT"});
-              history.push(`${match.url}`);
+              // history.push(`${match.url}`);
             }}>Log Out</button>
           :
             <Link to="/login" class="level-item button is-primary" style={navBtnStyle}>Log in</Link>
