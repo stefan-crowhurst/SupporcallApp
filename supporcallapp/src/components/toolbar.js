@@ -4,6 +4,7 @@ import "../bstyles.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAddressBook, faBuilding, faChartLine, faChevronDown, faHome, faPhoneSquareAlt, faTicketAlt, faUserSecret } from '@fortawesome/free-solid-svg-icons';
 import { Context } from '../store';
+import { Dialler } from './dialler';
 
 const navBtnClass = "button is-light is-outlined is-inverted level-item";
 const navBtnStyle = {
@@ -47,25 +48,7 @@ export const Toolbar = () => {
         <div class="level-right">
           {store.loggedIn ? 
             <>
-              <div class={navBtnClass} style={navBtnStyle}><span class="icon"><FontAwesomeIcon size="lg" icon={faPhoneSquareAlt} /></span></div>
-              <div class="dropdown is-hoverable">
-                <div class="dropdown-trigger">
-                  <button class={navBtnClass} aria-haspopup="true" aria-controls="status-dropdown" style={navBtnStyle}>
-                    <span>Status</span> {/*this should probably show the current status with an icon when that feature is implemented*/}
-                    <span class="icon"><FontAwesomeIcon icon={faChevronDown} /></span>
-                  </button>
-                </div>
-                <div class="dropdown-menu" id="status-dropdown" role="menu">
-                  <div class="dropdown-content">
-                    {/*eslint-disable-next-line*/}
-                    <a class="dropdown-item">Available</a>
-                    {/*eslint-disable-next-line*/}
-                    <a class="dropdown-item">Unavailable</a>
-                    {/*eslint-disable-next-line*/}
-                    <a class="dropdown-item">Offline</a>
-                  </div>
-                </div>
-              </div>
+              <Dialler />
             </>
           : <></>}
           {store.loggedIn ?

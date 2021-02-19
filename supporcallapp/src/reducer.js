@@ -14,6 +14,11 @@ export const Reducer = (state, action) => {
         isAdminLoggedIn: false,
         loggedInAgentId: ""
       };
+    case "UPDATE_NUMBER":
+      return {
+        ...state,
+        numToCall:action.payload.numToCall
+      };
     default:
       return state;
   }

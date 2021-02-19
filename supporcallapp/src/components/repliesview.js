@@ -61,7 +61,7 @@ export const RepliesView = () => {
                 <h3 class="title is-6">#{r.replyIndex} {r.internalNote ? "Internal Note" : "Reply"} - At {moment(r.repliedAt).format("HH:mm DD/MM/YY")}</h3>
               </div>
               <div class="level-left">
-                <h3 class="title is-6">From {r.replierId + " at"} {r.contactAddress} by {r.replyType}</h3>
+                <h3 class="title is-6">From {r.replierId + " via"} {r.contactAddress} by {r.replyType}</h3>
               </div>
             </div>
             <div>{r.replyContent}</div>

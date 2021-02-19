@@ -4,7 +4,8 @@ import { Reducer } from "./reducer";
 const initialState = {
   loggedIn: false,
   isAdminLoggedIn: false,
-  loggedInAgentId: ""
+  loggedInAgentId: "",
+  numToCall: ""
 };
 
 export const Store = ({children}) => {
