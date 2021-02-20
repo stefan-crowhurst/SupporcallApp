@@ -33,7 +33,8 @@ export const Dialler = () => {
 
   useEffect(() => {
     axios.get(`https://supporcallapi.azurewebsites.net/api/Twilio/token/A0`).then((r) => {
-      device.setup(r.data);
+      // using fakeLocalDTMF can prevent tones doubling up in some cases
+      device.setup(r.data, {fakeLocalDTMF:true});
       device.on("ready", () => {
         setIsReady(true);
       });
@@ -134,21 +135,33 @@ export const Dialler = () => {
                       <div class="columns">
                         <div class="column has-text-centered">
                           <div class="button is-light" style={diallerKeyStyle} onClick={() => {
-                            dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "1"}});
+                            if (currentCall) {
+                              currentCall.sendDigits('1');
+                            } else {
+                              dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "1"}});
+                            }
                           }}>
                             <b>1</b>
                           </div>
                         </div>
                         <div class="column has-text-centered">
                           <div class="button is-light" style={diallerKeyStyle} onClick={() => {
-                            dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "2"}});
+                            if (currentCall) {
+                              currentCall.sendDigits('2');
+                            } else {
+                              dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "2"}});
+                            }
                           }}>
                             <b>2</b>
                           </div>
                         </div>
                         <div class="column has-text-centered">
                           <div class="button is-light" style={diallerKeyStyle} onClick={() => {
-                            dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "3"}});
+                            if (currentCall) {
+                              currentCall.sendDigits('3');
+                            } else {
+                              dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "3"}});
+                            }
                           }}>
                             <b>3</b>
                           </div>
@@ -157,21 +170,33 @@ export const Dialler = () => {
                       <div class="columns">
                         <div class="column has-text-centered">
                           <div class="button is-light" style={diallerKeyStyle} onClick={() => {
-                            dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "4"}});
+                            if (currentCall) {
+                              currentCall.sendDigits('4');
+                            } else {
+                              dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "4"}});
+                            }
                           }}>
                             <b>4</b>
                           </div>
                         </div>
                         <div class="column has-text-centered">
                           <div class="button is-light" style={diallerKeyStyle} onClick={() => {
-                            dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "5"}});
+                            if (currentCall) {
+                              currentCall.sendDigits('5');
+                            } else {
+                              dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "5"}});
+                            }
                           }}>
                             <b>5</b>
                           </div>
                         </div>
                         <div class="column has-text-centered">
                           <div class="button is-light" style={diallerKeyStyle} onClick={() => {
-                            dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "6"}});
+                            if (currentCall) {
+                              currentCall.sendDigits('6');
+                            } else {
+                              dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "6"}});
+                            }
                           }}>
                             <b>6</b>
                           </div>
@@ -180,21 +205,33 @@ export const Dialler = () => {
                       <div class="columns">
                         <div class="column has-text-centered">
                           <div class="button is-light" style={diallerKeyStyle} onClick={() => {
-                            dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "7"}});
+                            if (currentCall) {
+                              currentCall.sendDigits('7');
+                            } else {
+                              dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "7"}});
+                            }
                           }}>
                             <b>7</b>
                           </div>
                         </div>
                         <div class="column has-text-centered">
                           <div class="button is-light" style={diallerKeyStyle} onClick={() => {
-                            dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "8"}});
+                            if (currentCall) {
+                              currentCall.sendDigits('8');
+                            } else {
+                              dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "8"}});
+                            }
                           }}>
                             <b>8</b>
                           </div>
                         </div>
                         <div class="column has-text-centered">
                           <div class="button is-light" style={diallerKeyStyle} onClick={() => {
-                            dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "9"}});
+                            if (currentCall) {
+                              currentCall.sendDigits('9');
+                            } else {
+                              dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "9"}});
+                            }
                           }}>
                             <b>9</b>
                           </div>
@@ -203,21 +240,33 @@ export const Dialler = () => {
                       <div class="columns">
                         <div class="column has-text-centered">
                           <div class="button is-light" style={diallerKeyStyle} onClick={() => {
-                            dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "*"}});
+                            if (currentCall) {
+                              currentCall.sendDigits('*');
+                            } else {
+                              dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "*"}});
+                            }
                           }}>
                             <b>*</b>
                           </div>
                         </div>
                         <div class="column has-text-centered">
                           <div class="button is-light" style={diallerKeyStyle} onClick={() => {
-                            dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "0"}});
+                            if (currentCall) {
+                              currentCall.sendDigits('0');
+                            } else {
+                              dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "0"}});
+                            }
                           }}>
                             <b>0</b>
                           </div>
                         </div>
                         <div class="column has-text-centered">
                           <div class="button is-light" style={diallerKeyStyle} onClick={() => {
-                            dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "#"}});
+                            if (currentCall) {
+                              currentCall.sendDigits('#');
+                            } else {
+                              dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "#"}});
+                            }
                           }}>
                             <b>#</b>
                           </div>
