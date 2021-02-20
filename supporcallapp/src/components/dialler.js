@@ -15,7 +15,7 @@ export const Dialler = () => {
   var [currentCall, setCurrentCall] = useState(null);
   var [isMuted, setIsMuted] = useState(false);
   const [store, dispatch] = useContext(Context);
-  var device = new Device();
+  var [device, setDevice] = useState(new Device());
   // var worker = null;
   const navBtnClass = "button is-light is-outlined is-inverted level-item";
   const navBtnStyle = {
