@@ -32,41 +32,35 @@ export const Dialler = () => {
   };
 
   useEffect(() => {
-    console.log("USE EFFECTED");
     axios.get(`https://supporcallapi.azurewebsites.net/api/Twilio/token/A0`).then((r) => {
-      console.log("setup");
-      device = device.setup(r.data);
+      device.setup(r.data);
       device.on("ready", () => {
         setIsReady(true);
       });
       device.on("incoming", (c) => {
-        console.log("incoming");
         c.on("accept", (c) => {
-          console.log("accept");
           setCurrentCall(c);
           setIsIncoming(false);
         });
         c.on("ignore", () => {
-          console.log("ignore");
           setIsIncoming(false);
           setCurrentCall(null);
         });
         c.on("cancel", () => {
-          console.log("cancel");
           setIsIncoming(false);
           setCurrentCall(null);
         });
+        console.log(c);
         setCurrentCall(c);
         setIsIncoming(true);
       });
       device.on("connect", (c) => {
-        console.log("connect");
         c.on("disconnect", () => {
-          console.log("disconnect");
           setIsMuted(false);
           setCurrentCall(null);
         });
         setCurrentCall(c);
+        console.log(c);
       });
       device.on("error", (e) => console.log(e));
     });
@@ -105,163 +99,179 @@ export const Dialler = () => {
                   <button class="delete is-large card-header-icon" style={{margin:"auto"}} onClick={() => document.getElementById("dialler-modal").className = document.getElementById("dialler-modal").className.replace("is-active", "")} />
                 </div>
                 <div class="card-content">
-                  <div class="columns">
-                    <div class="column has-text-centered">
-                      <input type="tel" class="input" value={store.numToCall} onInput={(e) => {
-                        dispatch({type: "UPDATE_NUMBER", payload: {numToCall: e.target.value}});
-                      }} />
+                  {isIncoming ?
+                    <div style={{paddingBottom:"1em"}}>
+                      Call incoming from {currentCall.parameters.From}
                     </div>
-                    <div class="column is-2 has-text-centered">
-                      <div class="button is-light" onClick={() => {
-                        if (store.numToCall.length > 0) {
-                          dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall.slice(0, -1)}});
+                  :
+                    <>
+                      <div class="columns">
+                        {currentCall ?
+                          <div class="column has-text-centered">
+                            On call with: {currentCall._direction == "OUTGOING" ? store.numToCall : currentCall.parameters.From}
+                          </div>
+                        :
+                          <>
+                            <div class="column has-text-centered">
+                              <input type="tel" class="input" value={store.numToCall} onInput={(e) => {
+                                dispatch({type: "UPDATE_NUMBER", payload: {numToCall: e.target.value}});
+                              }} />
+                            </div>
+                            <div class="column is-2 has-text-centered">
+                              <div class="button is-light" onClick={() => {
+                                if (store.numToCall.length > 0) {
+                                  dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall.slice(0, -1)}});
+                                }
+                              }}>
+                                <span class="icon">
+                                  <FontAwesomeIcon size="lg" icon={faBackspace} />
+                                </span>
+                              </div>
+                            </div>
+                          </>
                         }
-                      }}>
-                        <span class="icon">
-                          <FontAwesomeIcon size="lg" icon={faBackspace} />
-                        </span>
                       </div>
-                    </div>
-                  </div>
-                  <div class="columns">
-                    <div class="column has-text-centered">
-                      <div class="button is-light" style={diallerKeyStyle} onClick={() => {
-                        dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "1"}});
-                      }}>
-                        <b>1</b>
-                      </div>
-                    </div>
-                    <div class="column has-text-centered">
-                      <div class="button is-light" style={diallerKeyStyle} onClick={() => {
-                        dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "2"}});
-                      }}>
-                        <b>2</b>
-                      </div>
-                    </div>
-                    <div class="column has-text-centered">
-                      <div class="button is-light" style={diallerKeyStyle} onClick={() => {
-                        dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "3"}});
-                      }}>
-                        <b>3</b>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="columns">
-                    <div class="column has-text-centered">
-                      <div class="button is-light" style={diallerKeyStyle} onClick={() => {
-                        dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "4"}});
-                      }}>
-                        <b>4</b>
-                      </div>
-                    </div>
-                    <div class="column has-text-centered">
-                      <div class="button is-light" style={diallerKeyStyle} onClick={() => {
-                        dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "5"}});
-                      }}>
-                        <b>5</b>
-                      </div>
-                    </div>
-                    <div class="column has-text-centered">
-                      <div class="button is-light" style={diallerKeyStyle} onClick={() => {
-                        dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "6"}});
-                      }}>
-                        <b>6</b>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="columns">
-                    <div class="column has-text-centered">
-                      <div class="button is-light" style={diallerKeyStyle} onClick={() => {
-                        dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "7"}});
-                      }}>
-                        <b>7</b>
-                      </div>
-                    </div>
-                    <div class="column has-text-centered">
-                      <div class="button is-light" style={diallerKeyStyle} onClick={() => {
-                        dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "8"}});
-                      }}>
-                        <b>8</b>
-                      </div>
-                    </div>
-                    <div class="column has-text-centered">
-                      <div class="button is-light" style={diallerKeyStyle} onClick={() => {
-                        dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "9"}});
-                      }}>
-                        <b>9</b>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="columns">
-                    <div class="column has-text-centered">
-                      <div class="button is-light" style={diallerKeyStyle} onClick={() => {
-                        dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "*"}});
-                      }}>
-                        <b>*</b>
-                      </div>
-                    </div>
-                    <div class="column has-text-centered">
-                      <div class="button is-light" style={diallerKeyStyle} onClick={() => {
-                        dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "0"}});
-                      }}>
-                        <b>0</b>
-                      </div>
-                    </div>
-                    <div class="column has-text-centered">
-                      <div class="button is-light" style={diallerKeyStyle} onClick={() => {
-                        dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "#"}});
-                      }}>
-                        <b>#</b>
-                      </div>
-                    </div>
-                  </div>
-                  {/* Call interaction buttons */}
-                  <div class="columns">
-                  {!currentCall || isIncoming ?
-                    <div class="column has-text-centered">
-                      <div class="button is-success" style={diallerKeyStyle} onClick={() => {
-                        if (isIncoming) {
-                          currentCall.accept();
-                        } else {
-                          device.connect({callNum: store.numToCall});
-                        }
-                      }}>
-                        <span class="icon">
-                          {isIncoming ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faPhone} />}
-                        </span>
-                      </div>
-                    </div>
-                    : <></> }
-                    {/* Only render on incoming, or on a call */}
-                    {currentCall ?
-                    <div class="column has-text-centered">
-                      <div class="button is-danger" style={diallerKeyStyle} onClick={() => {
-                        if (isIncoming) {
-                          currentCall.ignore(); // using ignore instead of reject means it will be presented to other clients of the same name
-                        } else {
-                          currentCall.disconnect();
-                        }
-                      }}>
-                        <span class="icon">
-                          {isIncoming ? <FontAwesomeIcon icon={faTimes} /> : <FontAwesomeIcon icon={faPhoneSlash} />}
-                        </span>
-                      </div>
-                    </div>
-                    : <></>}
-                    {/* Only render when on a call */}
-                    {currentCall && !isIncoming ?
-                      <div class="column has-text-centered">
-                        <div class="button is-warning" style={diallerKeyStyle} onClick={() => {
-                          // mute or unmute the device
-                          const newState = !currentCall.isMuted(); // just to make sure there is no disparity here
-                          currentCall.mute(newState);
-                          setIsMuted(newState);
-                        }}>
-                          {isMuted ? <FontAwesomeIcon icon={faMicrophone} /> : <FontAwesomeIcon icon={faMicrophoneSlash} />}
+                      <div class="columns">
+                        <div class="column has-text-centered">
+                          <div class="button is-light" style={diallerKeyStyle} onClick={() => {
+                            dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "1"}});
+                          }}>
+                            <b>1</b>
+                          </div>
+                        </div>
+                        <div class="column has-text-centered">
+                          <div class="button is-light" style={diallerKeyStyle} onClick={() => {
+                            dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "2"}});
+                          }}>
+                            <b>2</b>
+                          </div>
+                        </div>
+                        <div class="column has-text-centered">
+                          <div class="button is-light" style={diallerKeyStyle} onClick={() => {
+                            dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "3"}});
+                          }}>
+                            <b>3</b>
+                          </div>
                         </div>
                       </div>
-                    : <></> }
-                  </div>
+                      <div class="columns">
+                        <div class="column has-text-centered">
+                          <div class="button is-light" style={diallerKeyStyle} onClick={() => {
+                            dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "4"}});
+                          }}>
+                            <b>4</b>
+                          </div>
+                        </div>
+                        <div class="column has-text-centered">
+                          <div class="button is-light" style={diallerKeyStyle} onClick={() => {
+                            dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "5"}});
+                          }}>
+                            <b>5</b>
+                          </div>
+                        </div>
+                        <div class="column has-text-centered">
+                          <div class="button is-light" style={diallerKeyStyle} onClick={() => {
+                            dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "6"}});
+                          }}>
+                            <b>6</b>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="columns">
+                        <div class="column has-text-centered">
+                          <div class="button is-light" style={diallerKeyStyle} onClick={() => {
+                            dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "7"}});
+                          }}>
+                            <b>7</b>
+                          </div>
+                        </div>
+                        <div class="column has-text-centered">
+                          <div class="button is-light" style={diallerKeyStyle} onClick={() => {
+                            dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "8"}});
+                          }}>
+                            <b>8</b>
+                          </div>
+                        </div>
+                        <div class="column has-text-centered">
+                          <div class="button is-light" style={diallerKeyStyle} onClick={() => {
+                            dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "9"}});
+                          }}>
+                            <b>9</b>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="columns">
+                        <div class="column has-text-centered">
+                          <div class="button is-light" style={diallerKeyStyle} onClick={() => {
+                            dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "*"}});
+                          }}>
+                            <b>*</b>
+                          </div>
+                        </div>
+                        <div class="column has-text-centered">
+                          <div class="button is-light" style={diallerKeyStyle} onClick={() => {
+                            dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "0"}});
+                          }}>
+                            <b>0</b>
+                          </div>
+                        </div>
+                        <div class="column has-text-centered">
+                          <div class="button is-light" style={diallerKeyStyle} onClick={() => {
+                            dispatch({type: "UPDATE_NUMBER", payload: {numToCall: store.numToCall + "#"}});
+                          }}>
+                            <b>#</b>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  }
+                  {/* Call interaction buttons */}
+                  <div class="columns">
+                    {!currentCall || isIncoming ?
+                      <div class="column has-text-centered">
+                        <div class="button is-success" style={diallerKeyStyle} onClick={() => {
+                          if (isIncoming) {
+                            currentCall.accept();
+                          } else {
+                            device.connect({callNum: store.numToCall});
+                          }
+                        }}>
+                          <span class="icon">
+                            {isIncoming ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faPhone} />}
+                          </span>
+                        </div>
+                      </div>
+                      : <></> }
+                      {/* Only render on incoming, or on a call */}
+                      {currentCall ?
+                      <div class="column has-text-centered">
+                        <div class="button is-danger" style={diallerKeyStyle} onClick={() => {
+                          if (isIncoming) {
+                            currentCall.ignore(); // using ignore instead of reject means it will be presented to other clients of the same name
+                          } else {
+                            currentCall.disconnect();
+                          }
+                        }}>
+                          <span class="icon">
+                            {isIncoming ? <FontAwesomeIcon icon={faTimes} /> : <FontAwesomeIcon icon={faPhoneSlash} />}
+                          </span>
+                        </div>
+                      </div>
+                      : <></>}
+                      {/* Only render when on a call */}
+                      {currentCall && !isIncoming ?
+                        <div class="column has-text-centered">
+                          <div class="button is-warning" style={diallerKeyStyle} onClick={() => {
+                            // mute or unmute the device
+                            const newState = !currentCall.isMuted(); // just to make sure there is no disparity here
+                            currentCall.mute(newState);
+                            setIsMuted(newState);
+                          }}>
+                            {isMuted ? <FontAwesomeIcon icon={faMicrophone} /> : <FontAwesomeIcon icon={faMicrophoneSlash} />}
+                          </div>
+                        </div>
+                      : <></> }
+                    </div>
                 </div>
               </div>
             </div>
