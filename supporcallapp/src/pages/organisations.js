@@ -4,6 +4,7 @@ import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencilAlt, faPlus, faSync, faTrashAlt, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Context } from '../store';
+import { CallButton } from "../components/callbutton";
 
 export const Organisations = () => {
   let [organisationList, setOrganisationList] = useState([]);
@@ -331,7 +332,8 @@ export const Organisations = () => {
                   <span>Phone Number</span>
                 </div>
                 <div class="column">
-                  <label>{currentOrganisation.phoneNumber ? currentOrganisation.phoneNumber : "No phone number set"}</label>
+                  <label style={{paddingRight:"0.7em"}}>{currentOrganisation.phoneNumber ? currentOrganisation.phoneNumber : "No phone number set"}</label>
+                  {currentOrganisation.phoneNumber ? <CallButton number={currentOrganisation.phoneNumber} /> : <></>}
                 </div>
               </div>
               <div class="columns">

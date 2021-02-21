@@ -4,7 +4,7 @@ import axios from "axios";
 import { Device } from "twilio-client";
 import { Worker } from "twilio-taskrouter";
 import { Context } from "../store";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBackspace, faCheck, faMicrophone, faMicrophoneSlash, faPhone, faPhoneSlash, faPhoneSquareAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { PhoneUtil } from "google-libphonenumber";
 
@@ -16,6 +16,7 @@ export const Dialler = () => {
   var [isMuted, setIsMuted] = useState(false);
   const [store, dispatch] = useContext(Context);
   var [device, setDevice] = useState(new Device());
+  const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
   // var worker = null;
   const navBtnClass = "button is-light is-outlined is-inverted level-item";
   const navBtnStyle = {
@@ -32,9 +33,18 @@ export const Dialler = () => {
   };
 
   useEffect(() => {
+    refreshDevice(false);
+  }, []);
+
+  function refreshDevice(update) {
     axios.get(`https://supporcallapi.azurewebsites.net/api/Twilio/token/A0`).then((r) => {
       // using fakeLocalDTMF can prevent tones doubling up in some cases
-      device.setup(r.data, {fakeLocalDTMF:true});
+      if (update) {
+        device.updateToken(r.data);
+      }
+      else {
+        device.setup(r.data, {fakeLocalDTMF:true});
+      }
       device.on("ready", () => {
         setIsReady(true);
       });
@@ -51,9 +61,9 @@ export const Dialler = () => {
           setIsIncoming(false);
           setCurrentCall(null);
         });
-        console.log(c);
         setCurrentCall(c);
         setIsIncoming(true);
+        document.getElementById("dialler-modal").classList.add("is-active"); // open the dialler when we get a call
       });
       device.on("connect", (c) => {
         c.on("disconnect", () => {
@@ -61,11 +71,15 @@ export const Dialler = () => {
           setCurrentCall(null);
         });
         setCurrentCall(c);
-        console.log(c);
       });
-      device.on("error", (e) => console.log(e));
+      device.on("error", (e) => console.error(e));
+      device.on("offline", () => {
+        setIsReady(false);
+        // call this function again to reconstruct the device
+        refreshDevice(true);
+      })
     });
-  }, [])
+  }
 
   // axios.get(`https://supporcallapi.azurewebsites.net/api/Twilio/worker/A0`).then((r) => {
   //   console.log(r.data);
@@ -109,14 +123,17 @@ export const Dialler = () => {
                       <div class="columns">
                         {currentCall ?
                           <div class="column has-text-centered">
-                            On call with: {currentCall._direction == "OUTGOING" ? store.numToCall : currentCall.parameters.From}
+                            On call with: {currentCall._direction == "OUTGOING" ? (store.numToCall.startsWith("+44") ? store.numToCall : "+44" + store.numToCall) : currentCall.parameters.From}
                           </div>
                         :
                           <>
                             <div class="column has-text-centered">
-                              <input type="tel" class="input" value={store.numToCall} onInput={(e) => {
-                                dispatch({type: "UPDATE_NUMBER", payload: {numToCall: e.target.value}});
-                              }} />
+                              <div class="level">
+                                <span class="level-item">+44</span>
+                                <input class="input level-item" style={{maxWidth:"85%"}} type="tel" value={store.numToCall} onInput={(e) => {
+                                  dispatch({type: "UPDATE_NUMBER", payload: {numToCall: e.target.value}});
+                                }} />
+                              </div>
                             </div>
                             <div class="column is-2 has-text-centered">
                               <div class="button is-light" onClick={() => {
@@ -282,7 +299,16 @@ export const Dialler = () => {
                           if (isIncoming) {
                             currentCall.accept();
                           } else {
-                            device.connect({callNum: store.numToCall});
+                            var callNum = "+44" + (store.numToCall.startsWith("+44") ? store.numToCall.substring(3) : store.numToCall);
+                            try {
+                              if (phoneUtil.isValidNumberForRegion(phoneUtil.parse(callNum, 'GB'), 'GB')) {
+                                device.connect({callNum: callNum});
+                              } else {
+                                alert(`Invalid number provided: ${callNum}`);
+                              }
+                            } catch {
+                              alert(`Invalid number provided: ${callNum}`);
+                            }
                           }
                         }}>
                           <span class="icon">

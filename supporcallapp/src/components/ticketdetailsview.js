@@ -4,11 +4,14 @@ import axios from "axios";
 import moment from "moment";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes, faPencilAlt, faSync } from '@fortawesome/free-solid-svg-icons';
+import { CallButton } from "./callbutton";
 
 export const TicketDetailsView = () => {
   const { ticketid } = useParams();
   let [ticket, setTicket] = useState();
   let [detailLoading, setDetailLoading] = useState(true);
+  let [contactNumber, setContactNumber] = useState("");
+  let [contactName, setContactName] = useState("");
   let match = useRouteMatch();
   const history = useHistory();
 
@@ -18,9 +21,13 @@ export const TicketDetailsView = () => {
   
   async function refreshTicketDetails() {
     setDetailLoading(true);
-    await axios.get("https://supporcallapi.azurewebsites.net/api/Tickets/details/" + ticketid).then((t) => {
+    await axios.get("https://supporcallapi.azurewebsites.net/api/Tickets/details/" + ticketid).then(async (t) => {
       setTicket(t.data);
       setDetailLoading(false);
+      await axios.get("https://supporcallapi.azurewebsites.net/api/Tickets/contactnumber/" + t.data.contactId).then((r) => {
+        setContactNumber(r.data.phoneNumber);
+        setContactName(r.data.name);
+      });
     });
   }
 
@@ -102,7 +109,8 @@ export const TicketDetailsView = () => {
             <b>Contact</b>
           </div>
           <div class="column">
-            <span>{ticket.contactId ? <>{ticket.contactId}</> : <>No contact found</>}</span>
+            <span>{ticket.contactId ? <span style={{paddingRight:"0.7em"}}>{contactName ? contactName : ticket.contactId}</span> : <>No contact found</>}</span>
+            {ticket.contactId && contactNumber ? <CallButton number={contactNumber} /> : <></>}
           </div>
         </div>
         <div class="columns">
@@ -134,7 +142,6 @@ export const TicketDetailsView = () => {
             <b>Labels</b>
           </div>
           <div class="column">
-            {/* TODO: Need to split this by commas and then render each as a tag */}
             <span>{ticket.labels ?
             <>
               {ticket.labels.split(",").map((s) => {
