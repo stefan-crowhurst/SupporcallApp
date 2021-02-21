@@ -2,22 +2,18 @@ import React, { useState, useContext, useEffect } from 'react';
 import "../bstyles.scss";
 import axios from "axios";
 import { Device } from "twilio-client";
-import { Worker } from "twilio-taskrouter";
 import { Context } from "../store";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBackspace, faCheck, faMicrophone, faMicrophoneSlash, faPhone, faPhoneSlash, faPhoneSquareAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { PhoneUtil } from "google-libphonenumber";
 
 export const Dialler = () => {
   var [isReady, setIsReady] = useState(false);
-  // var [workerReady, setWorkerReady] = useState(false);
   var [isIncoming, setIsIncoming] = useState(false);
   var [currentCall, setCurrentCall] = useState(null);
   var [isMuted, setIsMuted] = useState(false);
   const [store, dispatch] = useContext(Context);
   var [device, setDevice] = useState(new Device());
   const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
-  // var worker = null;
   const navBtnClass = "button is-light is-outlined is-inverted level-item";
   const navBtnStyle = {
     "borderRadius":"0px",
@@ -80,19 +76,6 @@ export const Dialler = () => {
       })
     });
   }
-
-  // axios.get(`https://supporcallapi.azurewebsites.net/api/Twilio/worker/A0`).then((r) => {
-  //   console.log(r.data);
-    // worker = new Worker(r.data);
-    // worker.on("ready", () => {
-    //   setWorkerReady(true);
-    //   console.log(worker);
-    // });
-    // worker.on("error", (e) => {
-    //   console.log(e);
-    //   worker = null;
-    // });
-  // });
 
   return (
     <>
@@ -355,19 +338,6 @@ export const Dialler = () => {
       :
         <div class={navBtnClass + " disabled"} disabled style={navBtnStyle}><span class="icon"><FontAwesomeIcon size="lg" icon={faPhoneSquareAlt} /></span></div>
       }
-      {/* {isReady ? <>Ready</> : <>Not ready</>}
-      {isConnected ? <>Connected</> : <>Not connected</>}
-      <button class="button" onClick={() => {
-        currentCall = device.connect({callNum: store.numToCall});
-        currentCall.on("accept", () => setIsConnected(true));
-        currentCall.on("disconnect", () => setIsConnected(false));
-      }}>Connect</button>
-      <button class="button is-primary" onClick={() => {
-        if (currentCall !== null) {
-          currentCall.disconnect();
-        }
-      }}>Disconnect</button>
-      {workerReady ? <>Worker Ready</> : <>Worker not ready</>} */}
     </>
   );
 }
