@@ -11,11 +11,9 @@ export const RepliesView = () => {
   let [responses, setResponses] = useState([]);
   let [isLoading, setIsLoading] = useState(true);
   let [isInternalNote, setIsInternalNote] = useState(false);
-  let agentId = "A0"; // TODO: Once login is implemented this must be refactored to use the logged in user ID
   const contactAddress = "Supporcall App";
   let [ticketReplyContent, setTicketReplyContent] = useState("");
   let [ticketReplyType, setTicketReplyType] = useState("Email");
-  
   const [store, dispatch] = useContext(Context);
 
   useEffect(() => {
@@ -89,7 +87,7 @@ export const RepliesView = () => {
           <button class="button is-primary" onClick={(e) => {
             e.preventDefault();
             axios.post(`https://supporcallapi.azurewebsites.net/api/Tickets/replies/${ticketid}`, {
-              replierId: agentId,
+              replierId: store.loggedInAgentId,
               replyContent: ticketReplyContent,
               contactAddress: contactAddress,
               internalNote: isInternalNote ? 1 : 0,

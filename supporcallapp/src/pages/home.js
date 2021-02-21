@@ -1,16 +1,17 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { Link, useRouteMatch, useHistory } from "react-router-dom";
+import React, { useEffect, useState, useContext } from 'react';
+import { useRouteMatch, useHistory } from "react-router-dom";
 import "../bstyles.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSync, faCheck, faTimes, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import moment from "moment";
+import { Context } from "../store";
 
 export const Home = () => {
   let [recentTickets, setRecentTickets] = useState([]);
   let [assignedTickets, setAssignedTickets] = useState([]);
   let [isLoading, setIsLoading] = useState(true);
-  let [myAgentId, setMyAgentId] = useState("A0"); // TODO: Once login is implemented use that instead
+  let [store, dispatch] = useContext(Context);
   let match = useRouteMatch();
   const history = useHistory();
 
@@ -25,7 +26,7 @@ export const Home = () => {
     await axios.get("https://supporcallapi.azurewebsites.net/api/Tickets/recent").then((r) => {
       setRecentTickets(r.data);
     });
-    await axios.get("https://supporcallapi.azurewebsites.net/api/Tickets/assigned/" + myAgentId).then((r) => {
+    await axios.get("https://supporcallapi.azurewebsites.net/api/Tickets/assigned/" + store.loggedInAgentId).then((r) => {
       setAssignedTickets(r.data);
     });
   }
