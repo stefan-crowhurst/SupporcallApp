@@ -79,6 +79,7 @@ export const Contacts = () => {
   }
 
   async function updateSummaries() {
+    console.log("update summaries");
     await axios.get("https://supporcallapi.azurewebsites.net/api/Organisations/summaries").then((r) => {
       setOrgSummary(r.data);
     });
@@ -267,9 +268,10 @@ export const Contacts = () => {
                     <select style={{width:"100%"}} onChange={(e) => {
                       setNewOrgId(e.target.value);
                     }}>
-                      <option value="" style={{display:"none"}} disabled selected>Select Organisation</option>
+                      {!newOrgId || newOrgId === "" ? <option value="" style={{display:"none"}} disabled selected>Select Organisation</option>
+                      : <option value="" style={{display:"none"}} disabled selected>Select Organisation</option>}
                       {orgSummary.map((i) => 
-                        <option value={i.id}>{i.name}</option>
+                        newOrgId === i.id ? <option value={i.id} selected>{i.name}</option> : <option value={i.id}>{i.name}</option>
                       )}
                     </select>
                   </div>
