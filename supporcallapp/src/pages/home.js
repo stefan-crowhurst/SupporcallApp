@@ -11,6 +11,7 @@ import { Pie } from "react-chartjs-2";
 export const Home = () => {
   let [recentTickets, setRecentTickets] = useState([]);
   let [assignedTickets, setAssignedTickets] = useState([]);
+  let [contacts, setContacts] = useState([]);
   var [stats, setStats] = useState(null);
   let [isLoading, setIsLoading] = useState(true);
   let [store, dispatch] = useContext(Context);
@@ -36,6 +37,9 @@ export const Home = () => {
     await axios.get("https://supporcallapi.azurewebsites.net/api/Stats/true").then((r) => {
       setStats(r.data);
     });
+    await axios.get("https://supporcallapi.azurewebsites.net/api/Contacts/contacttile").then((r) => {
+      setContacts(r.data);
+    });
   }
 
   return (
@@ -59,7 +63,10 @@ export const Home = () => {
             <div class="content" style={{width:"100%"}}>
               <div class="level">
                 <div class="level-left">
-                  <h2 class="title is-4">Recently Updated Tickets:</h2>
+                  <div>
+                    <h2 class="title is-4">Recently Updated Tickets:</h2>
+                    <p class="subtitle is-6">Most recently updated tickets listed here</p>
+                  </div>
                 </div>
                 <div class="level-right">
                   <button class="button is-primary is-inverted" onClick={() => history.push(`${match.url.replace("home", "")}tickets`)}>
@@ -111,7 +118,10 @@ export const Home = () => {
             <div class="content" style={{width:"100%"}}>
               <div class="level">
                 <div class="level-left">
-                  <h2 class="title is-4">Ticket Overview:</h2>
+                  <div>
+                    <h2 class="title is-4">Ticket Overview:</h2>
+                    <p class="subtitle is-6">Ratio of current ticket statuses</p>
+                  </div>
                 </div>
                 <div class="level-right">
                   <button class="button is-primary is-inverted" onClick={() => history.push(`${match.url.replace("home", "")}reports`)}>
@@ -123,7 +133,7 @@ export const Home = () => {
               {isLoading ? 
                 <div style={{width:"100%", textAlign:"center"}}>
                   <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
-                  <h3 style={{fontSize:"1em"}}><b>Loading assigned tickets...</b></h3> {/* Not sure why the font increased .5 em here without styling? */}
+                  <h3 style={{fontSize:"1em"}}><b>Loading report...</b></h3> {/* Not sure why the font increased .5 em here without styling? */}
                 </div>
               :
                 <Pie
@@ -150,7 +160,10 @@ export const Home = () => {
             <div class="content" style={{width:"100%"}}>
               <div class="level">
                 <div class="level-left">
-                  <h2 class="title is-4">Your Assigned Tickets:</h2>
+                  <div>
+                    <h2 class="title is-4">Your Assigned Tickets:</h2>
+                    <p class="subtitle is-6">Tickets assigned for you to look at</p>
+                  </div>
                 </div>
                 <div class="level-right">
                   <button class="button is-primary is-inverted" onClick={() => history.push(`${match.url.replace("home", "")}tickets`)}>
@@ -197,8 +210,56 @@ export const Home = () => {
             </div>
           </div>
           <div class="box tile is-12">
-            active agents
-            {/* TODO: Section pending Twilio and login work */}
+            <div class="content" style={{width:"100%"}}>
+              <div class="level">
+                <div class="level-left">
+                  <div>
+                    <h2 class="title is-4">Contacts:</h2>
+                    <p class="subtitle is-6">Click a contact to dial</p>
+                  </div>
+                </div>
+                <div class="level-right">
+                  <button class="button is-primary is-inverted" onClick={() => history.push(`${match.url.replace("home", "")}contacts`)}>
+                    <span>View all contacts</span>
+                    <span class="icon"><FontAwesomeIcon icon={faArrowRight} /></span>
+                  </button>
+                </div>
+              </div>
+              {isLoading ? 
+                <div style={{width:"100%", textAlign:"center"}}>
+                  <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
+                  <h3 style={{fontSize:"1em"}}><b>Loading contacts...</b></h3> {/* Not sure why the font increased .5 em here without styling? */}
+                </div>
+              : !isLoading && contacts.length === 0 ?
+                <div class="notification is-warning"><b>No contacts to display</b></div>
+              :
+                <table class="table is-hoverable is-fullwidth">
+                  <thead>
+                    <tr>
+                      <th><abbr title="Contact ID">ID</abbr></th>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th><abbr title="Contact ID">Org. Id</abbr></th>
+                      <th>Role</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {contacts.map((c) =>
+                      <tr id={c.id} style={{cursor:"pointer"}} onClick={() => {
+                        dispatch({type: "UPDATE_NUMBER", payload: {numToCall: c.phoneNumber}});
+                        document.getElementById("dialler-modal").classList.add("is-active");
+                      }}>
+                        <th>{c.id}</th>
+                        <td>{c.forename + " " + c.surname}</td>
+                        <td>{c.email}</td>
+                        <td>{c.orgId}</td>
+                        <td>{c.role}</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              }
+            </div>
           </div>
         </div>
       </div>
