@@ -94,15 +94,14 @@ export const Reports = () => {
               <div class="content" style={{width:"100%"}}>
                 <div class="tile is-parent is-vertical">
                   <div class="tile" style={tileTextStyle}>
-                    <h2 class="title is-4 level-item">Twilio Call Volume</h2>
+                    <h2 class="title is-4 level-item">Twilio Call Volume Per Day</h2>
                   </div>
-                  {/* TODO: Update to use Twilio data once available */}
                   <Bar class="tile"
                     data={{
-                      labels: ['1', '2', '3', '4', '5'],
+                      labels: stats ? Object.keys(stats.twilioCalls).reverse() : [],
                       datasets: [{
-                        label: 'Set Label',
-                        data: [12, 19, 3, 5, 2],
+                        label: "Num of calls",
+                        data: stats ? Object.values(stats.twilioCalls).reverse() : [],
                         backgroundColor: '#3e8ed0',
                       }]
                     }}
@@ -122,7 +121,7 @@ export const Reports = () => {
               <div class="content" style={{width:"100%"}}>
                 <div class="tile is-parent is-vertical">
                   <div class="tile" style={tileTextStyle}>
-                    <h2 class="title is-4 level-item">Ticket Statuses</h2>
+                    <h2 class="title is-4 level-item">Current Ticket Statuses</h2>
                   </div>
                   <Pie class="tile"
                     data={{
