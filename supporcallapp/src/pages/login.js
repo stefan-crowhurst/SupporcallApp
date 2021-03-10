@@ -4,7 +4,7 @@ import { Context } from '../store';
 import { useHistory, useRouteMatch } from "react-router-dom";
 
 export const Login = () => {
-  const [store, dispatch] = useContext(Context);
+  const [_store, dispatch] = useContext(Context);
   let [userId, setUserId] = useState("");
   let [password, setPassword] = useState("");
   let match = useRouteMatch();

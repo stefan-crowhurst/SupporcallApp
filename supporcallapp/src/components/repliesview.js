@@ -14,7 +14,7 @@ export const RepliesView = () => {
   const contactAddress = "Supporcall App";
   let [ticketReplyContent, setTicketReplyContent] = useState("");
   let [ticketReplyType, setTicketReplyType] = useState("Email");
-  const [store, dispatch] = useContext(Context);
+  const [store] = useContext(Context);
 
   useEffect(() => {
     refreshResponses();
@@ -81,6 +81,11 @@ export const RepliesView = () => {
           <div class="checkbox" style={{paddingRight:"2em"}}>
             <input type="checkbox" id="internalnotecheck" checked={isInternalNote} onChange={(e) => {
               setIsInternalNote(e.target.checked);
+              if (ticketReplyType === "Note") {
+                setTicketReplyType("Email");
+              } else {
+                setTicketReplyType("Note");
+              }
             }} />
             <label for="internalnotecheck" style={{marginLeft:"0.5em"}}>Make internal note?</label>
           </div>

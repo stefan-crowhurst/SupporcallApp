@@ -25,7 +25,7 @@ export const TicketDetailForm = (props) => {
   const history = useHistory();
   let [isLoading, setIsLoading] = useState(false);
   
-  const [store, dispatch] = useContext(Context);
+  const [store] = useContext(Context);
 
   useEffect(() => {
     clearObjects();

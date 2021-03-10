@@ -27,7 +27,7 @@ export const Contacts = () => {
   let [newPhoneNumber, setNewPhoneNumber] = useState("");
   let [newOrgId, setNewOrgId] = useState("");
   
-  const [store, dispatch] = useContext(Context);
+  const [store] = useContext(Context);
 
   useEffect(() => {
     refreshContactTable();

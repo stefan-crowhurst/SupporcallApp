@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPhone } from '@fortawesome/free-solid-svg-icons';
 
 export const CallButton = (params) => {
-  const [store, dispatch] = useContext(Context);
+  const [_store, dispatch] = useContext(Context);
   const btnStyle = {
     "borderRadius":"200px",
     "border":"0",

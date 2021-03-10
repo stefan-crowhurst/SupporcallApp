@@ -106,7 +106,7 @@ export const Dialler = () => {
                       <div class="columns">
                         {currentCall ?
                           <div class="column has-text-centered">
-                            On call with: {currentCall._direction == "OUTGOING" ? (store.numToCall.startsWith("+44") ? store.numToCall : "+44" + store.numToCall) : currentCall.parameters.From}
+                            On call with: {currentCall._direction === "OUTGOING" ? (store.numToCall.startsWith("+44") ? store.numToCall : "+44" + store.numToCall) : currentCall.parameters.From}
                           </div>
                         :
                           <>

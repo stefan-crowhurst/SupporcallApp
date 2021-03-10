@@ -24,7 +24,7 @@ export const Organisations = () => {
   let [newPhoneNumber, setNewPhoneNumber] = useState("");
   let [newSLA, setNewSLA] = useState(false);
   
-  const [store, dispatch] = useContext(Context);
+  const [store] = useContext(Context);
 
   useEffect(() => {
     refreshOrganisationTable();

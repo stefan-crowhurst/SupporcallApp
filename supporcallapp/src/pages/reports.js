@@ -128,7 +128,6 @@ export const Reports = () => {
                     data={{
                       labels: stats ? Object.keys(stats.statuses) : [],
                       datasets: [{
-                        label: 'Set Label',
                         data: stats ? Object.values(stats.statuses) : [],
                         backgroundColor: ['#D90000', "#ffe08a", "#09a2e3", "#48c78e"],
                       }]

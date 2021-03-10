@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Link } from "react-router-dom";
 import "../bstyles.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAddressBook, faBuilding, faChartLine, faChevronDown, faHome, faPhoneSquareAlt, faTicketAlt, faUserSecret } from '@fortawesome/free-solid-svg-icons';
+import { faAddressBook, faBuilding, faChartLine, faHome, faTicketAlt, faUserSecret } from '@fortawesome/free-solid-svg-icons';
 import { Context } from '../store';
 import { Dialler } from './dialler';
 

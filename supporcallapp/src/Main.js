@@ -13,7 +13,7 @@ import { Context } from "./store";
 import { LoginWarning } from './pages/loginwarning';
 
 const Main = () => {
-  const [store, dispatch] = useContext(Context);
+  const [store] = useContext(Context);
 
   return (
       <Router>

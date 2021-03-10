@@ -25,7 +25,7 @@ export const Agents = () => {
   let [newRole, setNewRole] = useState("");
   let [newAdmin, setNewAdmin] = useState(false);
   
-  const [store, dispatch] = useContext(Context);
+  const [store] = useContext(Context);
 
   useEffect(() => {
     refreshAgentTable();

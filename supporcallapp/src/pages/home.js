@@ -140,7 +140,6 @@ export const Home = () => {
                   data={{
                     labels: stats ? Object.keys(stats.statuses) : [],
                     datasets: [{
-                      label: 'Set Label',
                       data: stats ? Object.values(stats.statuses) : [],
                       backgroundColor: ['#D90000', "#ffe08a", "#09a2e3", "#48c78e"],
                     }]
@@ -239,7 +238,8 @@ export const Home = () => {
                       <th><abbr title="Contact ID">ID</abbr></th>
                       <th>Name</th>
                       <th>Email</th>
-                      <th><abbr title="Contact ID">Org. Id</abbr></th>
+                      <th><abbr title="Phone Number">Phone #</abbr></th>
+                      <th><abbr title="Organisation ID">Org. Id</abbr></th>
                       <th>Role</th>
                     </tr>
                   </thead>
@@ -252,6 +252,7 @@ export const Home = () => {
                         <th>{c.id}</th>
                         <td>{c.forename + " " + c.surname}</td>
                         <td>{c.email}</td>
+                        <td>{c.phoneNumber}</td>
                         <td>{c.orgId}</td>
                         <td>{c.role}</td>
                       </tr>
