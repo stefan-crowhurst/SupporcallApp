@@ -98,7 +98,7 @@ export const TicketDetailForm = (props) => {
   return(
     <>
       <h2 class="title is-4">{props.mode === "create" ? <>Creating Ticket </> : props.mode === "edit" ? <>Editing Ticket {ticketid}</> : <>Erroneous Path</>}</h2>
-      {props.mode === "edit" && !isLoading ? <h2 class="subtitle is-6">Ticket last updated at: {moment(lastUpdatedAt).format("HH:mm DD/MM/YY")}</h2> : <></>}
+      {props.mode === "edit" && !isLoading ? <h2 class="subtitle is-6">Ticket last updated at: {moment(lastUpdatedAt).format("HH:mm DD/MM/YY")}</h2> : null}
       {isLoading ? 
         <div style={{width:"100%", textAlign:"center"}}>
           <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
@@ -249,7 +249,7 @@ export const TicketDetailForm = (props) => {
               </div>
             </div>
           </div>
-        : <></>}
+        : null}
         <div style={{width:"100%", textAlign:"center"}}>
           {props.mode === "create" ? 
             <button class="button is-primary" style={{margin:"0.4em"}} onClick={async (e) => {
@@ -290,7 +290,7 @@ export const TicketDetailForm = (props) => {
               history.push(match.url.replace("/edit", ""));
             });
           }}>Update Ticket</button>
-          : <></>}
+          : null}
           <button class="button is-warning" style={{margin:"0.4em"}} onClick={async (e) => {
             e.preventDefault();
             clearObjects();

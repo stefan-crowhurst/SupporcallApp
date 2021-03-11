@@ -110,7 +110,7 @@ export const TicketDetailsView = () => {
           </div>
           <div class="column">
             <span>{ticket.contactId ? <span style={{paddingRight:"0.7em"}}>{contactName ? contactName : ticket.contactId}</span> : <>No contact found</>}</span>
-            {ticket.contactId && contactNumber ? <CallButton number={contactNumber} /> : <></>}
+            {ticket.contactId && contactNumber ? <CallButton number={contactNumber} /> : null}
           </div>
         </div>
         <div class="columns">

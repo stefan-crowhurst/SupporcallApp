@@ -299,7 +299,7 @@ export const Dialler = () => {
                           </span>
                         </div>
                       </div>
-                      : <></> }
+                      : null }
                       {/* Only render on incoming, or on a call */}
                       {currentCall ?
                       <div class="column has-text-centered">
@@ -315,7 +315,7 @@ export const Dialler = () => {
                           </span>
                         </div>
                       </div>
-                      : <></>}
+                      : null}
                       {/* Only render when on a call */}
                       {currentCall && !isIncoming ?
                         <div class="column has-text-centered">
@@ -328,7 +328,7 @@ export const Dialler = () => {
                             {isMuted ? <FontAwesomeIcon icon={faMicrophone} /> : <FontAwesomeIcon icon={faMicrophoneSlash} />}
                           </div>
                         </div>
-                      : <></> }
+                      : null}
                     </div>
                 </div>
               </div>

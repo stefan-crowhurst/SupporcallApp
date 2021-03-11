@@ -50,7 +50,7 @@ export const Toolbar = () => {
             <>
               <Dialler />
             </>
-          : <></>}
+          : null}
           {store.loggedIn ?
             <button class="button is-primary" onClick={() => {
               dispatch({type: "LOGGED_OUT"});

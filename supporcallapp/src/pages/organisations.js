@@ -226,20 +226,22 @@ export const Organisations = () => {
                   }} />
                 </div>
               </div>
-              <div class="columns">
-                <div class="column is-one-quarter">
-                  <span>SLA</span>
-                </div>
-                <div class="column">
-                  <div class="checkbox">
-                    <input type="checkbox" checked={newSLA} onChange={(e) => {
-                      setNewSLA(e.target.checked);
-                    }} />
+              {store.isAdminLoggedIn ?
+                <div class="columns">
+                  <div class="column is-one-quarter">
+                    <span>SLA</span>
+                  </div>
+                  <div class="column">
+                    <div class="checkbox">
+                      <input type="checkbox" checked={newSLA} onChange={(e) => {
+                        setNewSLA(e.target.checked);
+                      }} />
+                    </div>
                   </div>
                 </div>
-              </div>
+              : null}
               <div style={{width:"100%", textAlign:"center"}}>
-                { organisationCreateMode ? 
+                {organisationCreateMode ? 
                   <button class="button is-primary" onClick={async (e) => {
                     e.preventDefault();
                     setDetailLoading(true);
@@ -300,6 +302,7 @@ export const Organisations = () => {
                   }}>
                     <span class="icon"><FontAwesomeIcon icon={faPencilAlt} /></span>
                   </button>
+                  {store.isAdminLoggedIn ?
                   <button class="button is-rounded is-light level-item" onClick={async (e) => {
                     e.preventDefault(); // prevent page reload
                     await axios.delete(`https://supporcallapi.azurewebsites.net/api/Organisations/${store.loggedInAgentId}/${currentOrganisation.id}`).then(() => {
@@ -309,6 +312,7 @@ export const Organisations = () => {
                   }}>
                     <span class="icon"><FontAwesomeIcon icon={faTrashAlt} /></span>
                   </button>
+                  : null}
                 </div>
               </div>
               <div class="columns">
@@ -333,7 +337,7 @@ export const Organisations = () => {
                 </div>
                 <div class="column">
                   <label style={{paddingRight:"0.7em"}}>{currentOrganisation.phoneNumber ? currentOrganisation.phoneNumber : "No phone number set"}</label>
-                  {currentOrganisation.phoneNumber ? <CallButton number={currentOrganisation.phoneNumber} /> : <></>}
+                  {currentOrganisation.phoneNumber ? <CallButton number={currentOrganisation.phoneNumber} /> : null}
                 </div>
               </div>
               <div class="columns">

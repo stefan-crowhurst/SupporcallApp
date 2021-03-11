@@ -64,13 +64,15 @@ export const Agents = () => {
 
   function createAgentClickRoutine(e) {
     e.preventDefault();
-    setAgentCreateMode(true);
-    // update table styling
-    if (currentAgent && currentAgent.id && currentAgent.id !== e.id && currentAgent.id.length > 0) {
-      document.getElementById(currentAgent.id).classList.remove('is-selected');
-      clearNewObject();
-      if (agentEditMode) {
-        setAgentEditMode(false);
+    if (store.isAdminLoggedIn) {
+      setAgentCreateMode(true);
+      // update table styling
+      if (currentAgent && currentAgent.id && currentAgent.id !== e.id && currentAgent.id.length > 0) {
+        document.getElementById(currentAgent.id).classList.remove('is-selected');
+        clearNewObject();
+        if (agentEditMode) {
+          setAgentEditMode(false);
+        }
       }
     }
   }
@@ -92,10 +94,11 @@ export const Agents = () => {
                   }}>
                     <span class="icon"><FontAwesomeIcon icon={faSync} /></span>
                   </button>
-                  <button class="button is-primary level-item" onClick={(e) => createAgentClickRoutine(e)}>
+                  {store.isAdminLoggedIn ? <button class="button is-primary level-item" onClick={(e) => createAgentClickRoutine(e)}>
                     <span class="icon"><FontAwesomeIcon icon={faPlus} /></span>
                     <span>Create</span>
                   </button>
+                  : null}
                 </div>
               </div>
               <table class="table is-hoverable is-fullwidth">
@@ -181,7 +184,7 @@ export const Agents = () => {
             <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
             <h3><b>Loading details...</b></h3>
           </div>
-          : (currentAgent && agentEditMode) || agentCreateMode ?
+          : (currentAgent && agentEditMode) || (agentCreateMode && store.isAdminLoggedIn) ?
             // agent detail editing view
             <div style={{width:"100%"}}>
               <div class="level">
@@ -229,16 +232,19 @@ export const Agents = () => {
                   }} />
                 </div>
               </div>
-              <div class="columns">
-                <div class="column is-one-quarter">
-                  <span>Password</span>
+              {store.isAdminLoggedIn || (store.loggedInAgentId === currentAgent.id) ?
+                <div class="columns">
+                  <div class="column is-one-quarter">
+                    <span>Password</span>
+                  </div>
+                  <div class="column">
+                    <input class="input" type="text" value={newPassword} onChange={(e) => {
+                      setNewPassword(e.target.value);
+                    }} />
+                  </div>
                 </div>
-                <div class="column">
-                  <input class="input" type="text" value={newPassword} onChange={(e) => {
-                    setNewPassword(e.target.value);
-                  }} />
-                </div>
-              </div>
+              : null}
+              {store.isAdminLoggedIn ?
               <div class="columns">
                 <div class="column is-one-quarter">
                   <span>Role</span>
@@ -249,6 +255,8 @@ export const Agents = () => {
                   }} />
                 </div>
               </div>
+              : null}
+              {store.isAdminLoggedIn ?
               <div class="columns">
                 <div class="column is-one-quarter">
                   <span>Is Administrator?</span>
@@ -261,47 +269,52 @@ export const Agents = () => {
                   </div>
                 </div>
               </div>
+              : null}
               <div style={{width:"100%", textAlign:"center"}}>
-                { agentCreateMode ? 
+                {agentCreateMode && store.isAdminLoggedIn ? 
                   <button class="button is-primary" onClick={async (e) => {
                     e.preventDefault();
-                    setDetailLoading(true);
-                    setAgentCreateMode(false);
-                    await axios.post("https://supporcallapi.azurewebsites.net/api/Agents", {
-                      forename: newForename,
-                      surname: newSurname,
-                      email: newEmail,
-                      password: newPassword,
-                      role: newRole,
-                      admin: newAdmin ? 1 : 0,
-                      requesterId: store.loggedInAgentId
-                    }).then(() => {
-                      setDetailLoading(false);
-                      refreshAgentTable(false);
-                      clearNewObject();
-                      setCurrentAgent();
-                    });
+                    if (store.isAdminLoggedIn) {
+                      setDetailLoading(true);
+                      setAgentCreateMode(false);
+                      await axios.post("https://supporcallapi.azurewebsites.net/api/Agents", {
+                        forename: newForename,
+                        surname: newSurname,
+                        email: newEmail,
+                        password: newPassword,
+                        role: newRole,
+                        admin: newAdmin ? 1 : 0,
+                        requesterId: store.loggedInAgentId
+                      }).then(() => {
+                        setDetailLoading(false);
+                        refreshAgentTable(false);
+                        clearNewObject();
+                        setCurrentAgent();
+                      });
+                    }
                   }}>Create Agent</button>
                 :
                   <button class="button is-primary" onClick={async (e) => {
                     e.preventDefault(); // prevent page reload
-                    setDetailLoading(true);
-                    setAgentEditMode(false);
-                    await axios.post("https://supporcallapi.azurewebsites.net/api/Agents/update", {
-                      id : currentAgent.id,
-                      forename: newForename,
-                      surname: newSurname,
-                      email: newEmail,
-                      password: newPassword,
-                      role: newRole,
-                      admin: newAdmin ? 1 : 0,
-                      requesterId: store.loggedInAgentId
-                    }).then((r) => {
-                      clearNewObject();
-                      setCurrentAgent(r.data);
-                      setDetailLoading(false);
-                      refreshAgentTable(false);
-                    });
+                    if (store.isAdminLoggedIn || store.loggedInAgentId === currentAgent.id) {
+                      setDetailLoading(true);
+                      setAgentEditMode(false);
+                      await axios.post("https://supporcallapi.azurewebsites.net/api/Agents/update", {
+                        id : currentAgent.id,
+                        forename: newForename,
+                        surname: newSurname,
+                        email: newEmail,
+                        password: newPassword,
+                        role: newRole,
+                        admin: newAdmin ? 1 : 0,
+                        requesterId: store.loggedInAgentId
+                      }).then((r) => {
+                        clearNewObject();
+                        setCurrentAgent(r.data);
+                        setDetailLoading(false);
+                        refreshAgentTable(false);
+                      });
+                    }
                   }}>Update Agent</button>
                 }
               </div>
@@ -317,27 +330,31 @@ export const Agents = () => {
                   <button class="button is-rounded is-light level-item" onClick={async (e) => refreshAgentDetails(e)}>
                     <span class="icon"><FontAwesomeIcon icon={faSync} /></span>
                   </button>
-                  <button class="button is-rounded is-light level-item" onClick={(e) => {
-                    e.preventDefault(); // prevent page reload
-                    setNewForename(currentAgent.forename);
-                    setNewSurname(currentAgent.surname);
-                    setNewEmail(currentAgent.email);
-                    setNewPassword(currentAgent.password);
-                    setNewRole(currentAgent.role);
-                    setNewAdmin(currentAgent.admin);
-                    setAgentEditMode(!agentEditMode);
-                  }}>
-                    <span class="icon"><FontAwesomeIcon icon={faPencilAlt} /></span>
-                  </button>
-                  <button class="button is-rounded is-light level-item" onClick={async (e) => {
-                    e.preventDefault(); // prevent page reload
-                    await axios.delete(`https://supporcallapi.azurewebsites.net/api/Agents/${store.loggedInAgentId}/${currentAgent.id}`).then(() => {
-                      setCurrentAgent();
-                      refreshAgentTable(true);
-                    });
-                  }}>
-                    <span class="icon"><FontAwesomeIcon icon={faTrashAlt} /></span>
-                  </button>
+                  {store.isAdminLoggedIn || (currentAgent.id === store.loggedInAgentId) ?
+                    <button class="button is-rounded is-light level-item" onClick={(e) => {
+                      e.preventDefault(); // prevent page reload
+                      setNewForename(currentAgent.forename);
+                      setNewSurname(currentAgent.surname);
+                      setNewEmail(currentAgent.email);
+                      setNewPassword(currentAgent.password);
+                      setNewRole(currentAgent.role);
+                      setNewAdmin(currentAgent.admin);
+                      setAgentEditMode(!agentEditMode);
+                    }}>
+                      <span class="icon"><FontAwesomeIcon icon={faPencilAlt} /></span>
+                    </button>
+                  : null}
+                  {store.isAdminLoggedIn ?
+                    <button class="button is-rounded is-light level-item" onClick={async (e) => {
+                      e.preventDefault(); // prevent page reload
+                      await axios.delete(`https://supporcallapi.azurewebsites.net/api/Agents/${store.loggedInAgentId}/${currentAgent.id}`).then(() => {
+                        setCurrentAgent();
+                        refreshAgentTable(true);
+                      });
+                    }}>
+                      <span class="icon"><FontAwesomeIcon icon={faTrashAlt} /></span>
+                    </button>
+                  : null}
                 </div>
               </div>
               <div class="columns">

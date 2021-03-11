@@ -345,15 +345,17 @@ export const Contacts = () => {
                   }}>
                     <span class="icon"><FontAwesomeIcon icon={faPencilAlt} /></span>
                   </button>
-                  <button class="button is-rounded is-light level-item" onClick={async (e) => {
-                    e.preventDefault(); // prevent page reload
-                    await axios.delete(`https://supporcallapi.azurewebsites.net/api/Contacts/${store.loggedInAgentId}/${currentContact.id}`).then(() => {
-                      setCurrentContact();
-                      refreshContactTable(true);
-                    });
-                  }}>
-                    <span class="icon"><FontAwesomeIcon icon={faTrashAlt} /></span>
-                  </button>
+                  {store.isAdminLoggedIn ?
+                    <button class="button is-rounded is-light level-item" onClick={async (e) => {
+                      e.preventDefault(); // prevent page reload
+                      await axios.delete(`https://supporcallapi.azurewebsites.net/api/Contacts/${store.loggedInAgentId}/${currentContact.id}`).then(() => {
+                        setCurrentContact();
+                        refreshContactTable(true);
+                      });
+                    }}>
+                      <span class="icon"><FontAwesomeIcon icon={faTrashAlt} /></span>
+                    </button>
+                  : null}
                 </div>
               </div>
               <div class="columns">
@@ -394,7 +396,7 @@ export const Contacts = () => {
                 </div>
                 <div class="column">
                   <label style={{paddingRight:"0.7em"}}>{currentContact.phoneNumber ? currentContact.phoneNumber : "No phone number set"}</label>
-                  {currentContact.phoneNumber ? <CallButton number={currentContact.phoneNumber} /> : <></>}
+                  {currentContact.phoneNumber ? <CallButton number={currentContact.phoneNumber} /> : null}
                 </div>
               </div>
               <div class="columns">
