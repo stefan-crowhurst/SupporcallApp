@@ -1,0 +1,35 @@
+# Node.js with React
+# Build a Node.js project that uses React.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '10.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    npm install
+    npm run build
+  displayName: 'npm install and build'
+  workingDirectory: '$(Build.SourcesDirectory)/supporcallapp'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)/supporcallapp/build'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- script: |
+    npm install -g netlify-cli
+    netlify deploy --prod --dir '$(Build.ArtifactStagingDirectory)'
+  displayName: 'Netlify Deploy'
+  env:
+    NETLIFY_SITE_ID: $(site-id)
+    NETLIFY_AUTH_TOKEN: $(token)
