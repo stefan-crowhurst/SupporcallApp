@@ -33,7 +33,7 @@ export const Dialler = () => {
   }, []);
 
   function refreshDevice(update) {
-    axios.get(`https://supporcallapi.azurewebsites.net/api/Twilio/token/A0`).then((r) => {
+    axios.get(`https://supporcallapi.azurewebsites.net/api/Twilio/token`).then((r) => {
       // using fakeLocalDTMF can prevent tones doubling up in some cases
       if (update) {
         device.updateToken(r.data);
