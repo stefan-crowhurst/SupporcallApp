@@ -23,7 +23,7 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    SourceFolder: '$(System.DefaultWorkingDirectory)/build'
+    SourceFolder: '$(Build.SourcesDirectory)/supporcallapp/build'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - script: |
