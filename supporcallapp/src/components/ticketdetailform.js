@@ -37,10 +37,10 @@ export const TicketDetailForm = (props) => {
         var inputTags = document.getElementById('labelstags');
         var tagAccessor = new BulmaTagsInput(inputTags);
         tagAccessor.on("after.add", (data) => {
-          setLabels(inputTags.BulmaTagsInput().value);
+          setLabels(tagAccessor.value);
         });
         tagAccessor.on("after.remove", (data) => {
-          setLabels(inputTags.BulmaTagsInput().value);
+          setLabels(tagAccessor.value);
         });
         tagAccessor.add(labels);
       });
@@ -48,10 +48,10 @@ export const TicketDetailForm = (props) => {
       var inputTags = document.getElementById('labelstags');
       var tagAccessor = new BulmaTagsInput(inputTags);
       tagAccessor.on("after.add", (data) => {
-        setLabels(inputTags.BulmaTagsInput().value);
+        setLabels(tagAccessor.value);
       });
       tagAccessor.on("after.remove", (data) => {
-        setLabels(inputTags.BulmaTagsInput().value);
+        setLabels(tagAccessor.value);
       });
     }
   }, [props.mode]);
