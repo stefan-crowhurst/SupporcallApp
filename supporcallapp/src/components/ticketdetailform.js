@@ -36,21 +36,23 @@ export const TicketDetailForm = (props) => {
         setIsLoading(false);
         var inputTags = document.getElementById('labelstags');
         new BulmaTagsInput(inputTags);
-        inputTags.BulmaTagsInput().on("after.add", (data) => {
+        var tagAccessor = inputTags.BulmaTagsInput();
+        tagAccessor.on("after.add", (data) => {
           setLabels(inputTags.BulmaTagsInput().value);
         });
-        inputTags.BulmaTagsInput().on("after.remove", (data) => {
+        tagAccessor.on("after.remove", (data) => {
           setLabels(inputTags.BulmaTagsInput().value);
         });
-        inputTags.BulmaTagsInput().add(labels);
+        tagAccessor.add(labels);
       });
     } else {
       var inputTags = document.getElementById('labelstags');
       new BulmaTagsInput(inputTags);
-      inputTags.BulmaTagsInput().on("after.add", (data) => {
+      var tagAccessor = inputTags.BulmaTagsInput();
+      tagAccessor.on("after.add", (data) => {
         setLabels(inputTags.BulmaTagsInput().value);
       });
-      inputTags.BulmaTagsInput().on("after.remove", (data) => {
+      tagAccessor.on("after.remove", (data) => {
         setLabels(inputTags.BulmaTagsInput().value);
       });
     }
