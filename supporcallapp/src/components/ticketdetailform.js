@@ -35,8 +35,7 @@ export const TicketDetailForm = (props) => {
       refreshDetails().then(() => {
         setIsLoading(false);
         var inputTags = document.getElementById('labelstags');
-        new BulmaTagsInput(inputTags);
-        var tagAccessor = inputTags.BulmaTagsInput();
+        var tagAccessor = new BulmaTagsInput(inputTags);
         tagAccessor.on("after.add", (data) => {
           setLabels(inputTags.BulmaTagsInput().value);
         });
@@ -47,8 +46,7 @@ export const TicketDetailForm = (props) => {
       });
     } else {
       var inputTags = document.getElementById('labelstags');
-      new BulmaTagsInput(inputTags);
-      var tagAccessor = inputTags.BulmaTagsInput();
+      var tagAccessor = new BulmaTagsInput(inputTags);
       tagAccessor.on("after.add", (data) => {
         setLabels(inputTags.BulmaTagsInput().value);
       });
