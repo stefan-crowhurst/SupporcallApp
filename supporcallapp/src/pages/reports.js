@@ -5,6 +5,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSync } from "@fortawesome/free-solid-svg-icons";
 import axios from 'axios';
 
+/**
+ * Show a range of reports on the state of the system in a dashboard
+ * 
+ * @returns Reports dashboard page
+ */
 export const Reports = () => {
   var [isLoading, setIsLoading] = useState(false);
   var [stats, setStats] = useState(null);
@@ -38,14 +43,17 @@ export const Reports = () => {
           </button>
         </div>
       </div>
-      {isLoading ? 
+      {isLoading ?
+        // Show loading bar
         <div style={{width:"100%", textAlign:"center"}}>
           <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
           <h3><b>Loading statistics...</b></h3>
         </div>
       :
+        // Show stats
         <div class="tile is-ancestor is-vertical">
           <div class="box tile is-12">
+            {/* Banner of basic numeric statistics */}
             <div class="level has-text-centered" style={{width:"100%"}}>
               <div class="level-item">
                 <div class="tile is-parent is-vertical">
@@ -91,6 +99,7 @@ export const Reports = () => {
           </div>
           <div class="box tile is-parent is-12">
             <div class="tile is-6" style={{marginBottom:0}}>
+              {/* Number of calls per day chart */}
               <div class="content" style={{width:"100%"}}>
                 <div class="tile is-parent is-vertical">
                   <div class="tile" style={tileTextStyle}>
@@ -110,7 +119,7 @@ export const Reports = () => {
                     options={{
                       maintainAspectRatio: false,
                       scales: {
-                        yAxes: [{ticks: {suggestedMin: 0}}]
+                        yAxes: [{ticks: {suggestedMin: 0}}] // make the y axis start at 0
                       }
                     }}
                   />
@@ -118,6 +127,7 @@ export const Reports = () => {
               </div>
             </div>
             <div class="tile is-6">
+              {/* Ticket status breakdown chart */}
               <div class="content" style={{width:"100%"}}>
                 <div class="tile is-parent is-vertical">
                   <div class="tile" style={tileTextStyle}>

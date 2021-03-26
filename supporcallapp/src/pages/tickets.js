@@ -5,6 +5,11 @@ import { TicketTable } from '../components/tickettable';
 import { TicketDetailForm } from '../components/ticketdetailform';
 import { TicketView } from '../components/ticketview';
 
+/**
+ * Tickets page, react router hub for other ticket components
+ * 
+ * @returns Tickets page router hub
+ */
 export const Tickets = () => {
   let match = useRouteMatch();
 

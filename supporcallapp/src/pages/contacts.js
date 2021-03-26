@@ -6,7 +6,13 @@ import { faPencilAlt, faPlus, faSync, faTrashAlt } from '@fortawesome/free-solid
 import { Context } from '../store';
 import { CallButton } from '../components/callbutton';
 
+/**
+ * Page which allows for viewing, updating, creating and deleting contacts
+ * 
+ * @returns Page with full range of contact data management interactions
+ */
 export const Contacts = () => {
+  // Meta page state
   let [contactList, setContactList] = useState([]);
   let [currentContact, setCurrentContact] = useState();
   let [detailLoading, setDetailLoading] = useState(false);
@@ -14,7 +20,9 @@ export const Contacts = () => {
   let [contactCreateMode, setContactCreateMode] = useState(false);
   let [isLoading, setIsLoading] = useState(true);
   let [orgSummary, setOrgSummary] = useState([]);
+  const [store] = useContext(Context);
 
+  // Contact attributes:
   // react does not update the value props on html elements where the
   // value is set to a property of a stateful object, this means the form does
   // not update when using onChange/onInput. Since react doesn't support
@@ -26,8 +34,6 @@ export const Contacts = () => {
   let [newEmail, setNewEmail] = useState("");
   let [newPhoneNumber, setNewPhoneNumber] = useState("");
   let [newOrgId, setNewOrgId] = useState("");
-  
-  const [store] = useContext(Context);
 
   useEffect(() => {
     refreshContactTable();
@@ -90,6 +96,7 @@ export const Contacts = () => {
       <div class="column">
         <div class="table-container box" style={{width:"100%"}}>
           {contactList && contactList.length > 0 ?
+            // Display table with cherry-picked attributes
             <>
               <div class="level">
                 <div class="level-left">
@@ -151,31 +158,33 @@ export const Contacts = () => {
               </table>
             </>
           : isLoading ?
-          <div style={{width:"100%", textAlign:"center"}}>
-            <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
-            <h3><b>Loading contacts...</b></h3>
-          </div>
-          : !isLoading && contactList.length === 0 ?
-          <div style={{width:"100%"}}>
-            <div class="level">
-              <div class="level-left">
-                <h2 class="title is-4 level-item" style={{marginBottom:"0.4em"}}>All Contacts</h2>
-              </div>
-              <div class="level-right">
-                <button class="button is-rounded is-light level-item" onClick={async (e) => {
-                  e.preventDefault(); // prevent page reload
-                  refreshContactTable();
-                }}>
-                  <span class="icon"><FontAwesomeIcon icon={faSync} /></span>
-                </button>
-                <button class="button is-primary level-item" onClick={(e) => createContactClickRoutine(e)}>
-                  <span class="icon"><FontAwesomeIcon icon={faPlus} /></span>
-                  <span>Create</span>
-                </button>
-              </div>
+            // Show loading bar
+            <div style={{width:"100%", textAlign:"center"}}>
+              <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
+              <h3><b>Loading contacts...</b></h3>
             </div>
-            <div class="notification is-warning"><b>No contacts to display, please create a contact to continue</b></div>
-          </div>
+          : !isLoading && contactList.length === 0 ?
+            // 
+            <div style={{width:"100%"}}>
+              <div class="level">
+                <div class="level-left">
+                  <h2 class="title is-4 level-item" style={{marginBottom:"0.4em"}}>All Contacts</h2>
+                </div>
+                <div class="level-right">
+                  <button class="button is-rounded is-light level-item" onClick={async (e) => {
+                    e.preventDefault(); // prevent page reload
+                    refreshContactTable();
+                  }}>
+                    <span class="icon"><FontAwesomeIcon icon={faSync} /></span>
+                  </button>
+                  <button class="button is-primary level-item" onClick={(e) => createContactClickRoutine(e)}>
+                    <span class="icon"><FontAwesomeIcon icon={faPlus} /></span>
+                    <span>Create</span>
+                  </button>
+                </div>
+              </div>
+              <div class="notification is-warning"><b>No contacts to display, please create a contact to continue</b></div>
+            </div>
           :
           <div style={{width:"100%", textAlign:"center"}}>
             <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
@@ -199,15 +208,16 @@ export const Contacts = () => {
                   <h2 class="title is-4 level-item" style={{marginBottom:"0.4em"}}>{contactCreateMode ? <>Creating Contact</> : <>Editing Contact: {currentContact.id}</>}</h2>
                 </div>
                 {!contactCreateMode ?
-                <div class="level-right">
-                  <button class="button is-rounded is-dark level-item" onClick={(e) => {
-                    e.preventDefault(); // prevent page reload
-                    clearNewObject();
-                    setContactEditMode(!contactEditMode);
-                  }}>
-                    <span class="icon"><FontAwesomeIcon icon={faPencilAlt} /></span>
-                  </button>
-                </div> : null}
+                  <div class="level-right">
+                    <button class="button is-rounded is-dark level-item" onClick={(e) => {
+                      e.preventDefault(); // prevent page reload
+                      clearNewObject();
+                      setContactEditMode(!contactEditMode);
+                    }}>
+                      <span class="icon"><FontAwesomeIcon icon={faPencilAlt} /></span>
+                    </button>
+                  </div>
+                : null}
               </div>
               <div class="columns">
                 <div class="column is-one-quarter">
@@ -278,7 +288,7 @@ export const Contacts = () => {
                 </div>
               </div>
               <div style={{width:"100%", textAlign:"center"}}>
-                { contactCreateMode ? 
+                {contactCreateMode ? 
                   <button class="button is-primary" onClick={async (e) => {
                     e.preventDefault();
                     setDetailLoading(true);
@@ -409,6 +419,7 @@ export const Contacts = () => {
               </div>
             </div>
           :
+            // Show when no contact selected
             <div style={{width:"100%"}}>
               <h2 class="title is-4">No contact selected</h2>
               <h3 class="subtitle is-6">Please select or create a contact from the table panel</h3>

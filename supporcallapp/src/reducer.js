@@ -1,3 +1,10 @@
+/**
+ * Reducer for updating the store
+ * 
+ * @param {*} state The current state
+ * @param {*} action The action payload
+ * @returns Updated state object
+ */
 export const Reducer = (state, action) => {
   switch (action.type) {
     case "LOGGED_IN":
