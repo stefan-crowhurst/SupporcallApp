@@ -6,18 +6,25 @@ import { faAddressBook, faBuilding, faChartLine, faHome, faTicketAlt, faUserSecr
 import { Context } from '../store';
 import { Dialler } from './dialler';
 
-const navBtnClass = "button is-light is-outlined is-inverted level-item";
-const navBtnStyle = {
-  "borderRadius":"0px",
-  "border":"0",
-  "margin": "0",
-};
-
+/**
+ * Persistent toolbar incl. links to pages and dialler
+ * 
+ * @returns Toolbar with dialler and page links
+ */
 export const Toolbar = () => {
   const [store, dispatch] = useContext(Context);
+
+  // Common CSS and styling classes:
+  const navBtnClass = "button is-light is-outlined is-inverted level-item";
+  const navBtnStyle = {
+    "borderRadius":"0px",
+    "border":"0",
+    "margin": "0",
+  };
+
   return (
     <>
-      <nav class="level is-mobile" style={{borderBottom:"1px solid #CCCCCC"}}> {/*need to update this if the $border colour is updated at a later date*/}
+      <nav class="level is-mobile" style={{borderBottom:"1px solid #CCCCCC"}}>
         <div class="level-left">
           <Link to="/" class="level-item"><img src="../../supporcall-small.png" width="112" height="28" style={{paddingLeft:"6%"}} alt="Logo" /></Link>
           <Link to="/" class={navBtnClass} style={navBtnStyle}>
@@ -46,15 +53,16 @@ export const Toolbar = () => {
           </Link>
         </div>
         <div class="level-right">
+          {/* render dialler if agent loigged in */}
           {store.loggedIn ? 
             <>
               <Dialler />
             </>
           : null}
+          {/* Render log in/out button */}
           {store.loggedIn ?
             <button class="button is-primary" onClick={() => {
               dispatch({type: "LOGGED_OUT"});
-              // history.push(`${match.url}`);
             }}>Log Out</button>
           :
             <Link to="/login" class="level-item button is-primary" style={navBtnStyle}>Log in</Link>

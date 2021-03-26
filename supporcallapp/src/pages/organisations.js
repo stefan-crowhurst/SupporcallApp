@@ -6,14 +6,22 @@ import { faPencilAlt, faPlus, faSync, faTrashAlt, faCheck, faTimes } from '@fort
 import { Context } from '../store';
 import { CallButton } from "../components/callbutton";
 
+/**
+ * Page which allows for viewing, updating, creating and deleting organisations
+ * 
+ * @returns Page with full range of contact data management interactions
+ */
 export const Organisations = () => {
+  // Meta page state:
   let [organisationList, setOrganisationList] = useState([]);
   let [currentOrganisation, setCurrentOrganisation] = useState();
   let [detailLoading, setDetailLoading] = useState(false);
   let [organisationEditMode, setOrganisationEditMode] = useState(false);
   let [organisationCreateMode, setOrganisationCreateMode] = useState(false);
   let [isLoading, setIsLoading] = useState(true);
+  const [store] = useContext(Context);
 
+  // Organisation attributes
   // react does not update the value props on html elements where the
   // value is set to a property of a stateful object, this means the form does
   // not update when using onChange/onInput. Since react doesn't support
@@ -23,8 +31,6 @@ export const Organisations = () => {
   let [newEmail, setNewEmail] = useState("");
   let [newPhoneNumber, setNewPhoneNumber] = useState("");
   let [newSLA, setNewSLA] = useState(false);
-  
-  const [store] = useContext(Context);
 
   useEffect(() => {
     refreshOrganisationTable();
@@ -77,6 +83,7 @@ export const Organisations = () => {
       <div class="column">
         <div class="table-container box" style={{width:"100%"}}>
           {organisationList && organisationList.length > 0 ?
+            // Render table with cherry-picked attributes
             <>
               <div class="level">
                 <div class="level-left">
@@ -138,46 +145,51 @@ export const Organisations = () => {
               </table>
             </>
           : isLoading ?
-          <div style={{width:"100%", textAlign:"center"}}>
-            <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
-            <h3><b>Loading organisations...</b></h3>
-          </div>
-          : !isLoading && organisationList.length === 0 ?
-          <div style={{width:"100%"}}>
-            <div class="level">
-              <div class="level-left">
-                <h2 class="title is-4 level-item" style={{marginBottom:"0.4em"}}>All Organisations</h2>
-              </div>
-              <div class="level-right">
-                <button class="button is-rounded is-light level-item" onClick={async (e) => {
-                  e.preventDefault(); // prevent page reload
-                  refreshOrganisationTable();
-                }}>
-                  <span class="icon"><FontAwesomeIcon icon={faSync} /></span>
-                </button>
-                <button class="button is-primary level-item" onClick={(e) => createOrganisationClickRoutine(e)}>
-                  <span class="icon"><FontAwesomeIcon icon={faPlus} /></span>
-                  <span>Create</span>
-                </button>
-              </div>
+            // Show loading bar
+            <div style={{width:"100%", textAlign:"center"}}>
+              <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
+              <h3><b>Loading organisations...</b></h3>
             </div>
-            <div class="notification is-warning"><b>No organisations to display, please create a organisation to continue</b></div>
-          </div>
+          : !isLoading && organisationList.length === 0 ?
+            // Show no organisations message
+            <div style={{width:"100%"}}>
+              <div class="level">
+                <div class="level-left">
+                  <h2 class="title is-4 level-item" style={{marginBottom:"0.4em"}}>All Organisations</h2>
+                </div>
+                <div class="level-right">
+                  <button class="button is-rounded is-light level-item" onClick={async (e) => {
+                    e.preventDefault(); // prevent page reload
+                    refreshOrganisationTable();
+                  }}>
+                    <span class="icon"><FontAwesomeIcon icon={faSync} /></span>
+                  </button>
+                  <button class="button is-primary level-item" onClick={(e) => createOrganisationClickRoutine(e)}>
+                    <span class="icon"><FontAwesomeIcon icon={faPlus} /></span>
+                    <span>Create</span>
+                  </button>
+                </div>
+              </div>
+              <div class="notification is-warning"><b>No organisations to display, please create a organisation to continue</b></div>
+            </div>
           :
-          <div style={{width:"100%", textAlign:"center"}}>
-            <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
-            <h3><b>Attempting to load organisations</b></h3>
-            <h3><b>An error may have occurred, please refresh the page or contact an administrator</b></h3>
-          </div>}
+            // Show error message
+            <div style={{width:"100%", textAlign:"center"}}>
+              <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
+              <h3><b>Attempting to load organisations</b></h3>
+              <h3><b>An error may have occurred, please refresh the page or contact an administrator</b></h3>
+            </div>
+          }
         </div>
       </div>
       <div class="column">
         <div class="box" style={{width:"100%"}}>
           {detailLoading ?
-          <div style={{width:"100%", textAlign:"center"}}>
-            <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
-            <h3><b>Loading details...</b></h3>
-          </div>
+            // Show loading bar
+            <div style={{width:"100%", textAlign:"center"}}>
+              <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
+              <h3><b>Loading details...</b></h3>
+            </div>
           : (currentOrganisation && organisationEditMode) || organisationCreateMode ?
             // organisation detail editing view
             <div style={{width:"100%"}}>
@@ -186,16 +198,19 @@ export const Organisations = () => {
                   <h2 class="title is-4 level-item" style={{marginBottom:"0.4em"}}>{organisationCreateMode ? <>Creating Organisation</> : <>Editing Organisation: {currentOrganisation.id}</>}</h2>
                 </div>
                 {!organisationCreateMode ?
-                <div class="level-right">
-                  <button class="button is-rounded is-dark level-item" onClick={(e) => {
-                    e.preventDefault(); // prevent page reload
-                    clearNewObject();
-                    setOrganisationEditMode(!organisationEditMode);
-                  }}>
-                    <span class="icon"><FontAwesomeIcon icon={faPencilAlt} /></span>
-                  </button>
-                </div> : null}
+                  // Render pencil toggle if editing
+                  <div class="level-right">
+                    <button class="button is-rounded is-dark level-item" onClick={(e) => {
+                      e.preventDefault(); // prevent page reload
+                      clearNewObject();
+                      setOrganisationEditMode(!organisationEditMode);
+                    }}>
+                      <span class="icon"><FontAwesomeIcon icon={faPencilAlt} /></span>
+                    </button>
+                  </div>
+                : null}
               </div>
+              {/* Render details and edit fields */}
               <div class="columns">
                 <div class="column is-one-quarter">
                   <span>Name</span>
@@ -227,6 +242,7 @@ export const Organisations = () => {
                 </div>
               </div>
               {store.isAdminLoggedIn ?
+                // Show admin-only attributes
                 <div class="columns">
                   <div class="column is-one-quarter">
                     <span>SLA</span>
@@ -241,7 +257,8 @@ export const Organisations = () => {
                 </div>
               : null}
               <div style={{width:"100%", textAlign:"center"}}>
-                {organisationCreateMode ? 
+                {/* Render create/update button depending on mode */}
+                {organisationCreateMode ?
                   <button class="button is-primary" onClick={async (e) => {
                     e.preventDefault();
                     setDetailLoading(true);
@@ -303,18 +320,20 @@ export const Organisations = () => {
                     <span class="icon"><FontAwesomeIcon icon={faPencilAlt} /></span>
                   </button>
                   {store.isAdminLoggedIn ?
-                  <button class="button is-rounded is-light level-item" onClick={async (e) => {
-                    e.preventDefault(); // prevent page reload
-                    await axios.delete(`https://supporcallapi.azurewebsites.net/api/Organisations/${store.loggedInAgentId}/${currentOrganisation.id}`).then(() => {
-                      setCurrentOrganisation();
-                      refreshOrganisationTable(true);
-                    });
-                  }}>
-                    <span class="icon"><FontAwesomeIcon icon={faTrashAlt} /></span>
-                  </button>
+                    // Show delete icon for admins only
+                    <button class="button is-rounded is-light level-item" onClick={async (e) => {
+                      e.preventDefault(); // prevent page reload
+                      await axios.delete(`https://supporcallapi.azurewebsites.net/api/Organisations/${store.loggedInAgentId}/${currentOrganisation.id}`).then(() => {
+                        setCurrentOrganisation();
+                        refreshOrganisationTable(true);
+                      });
+                    }}>
+                      <span class="icon"><FontAwesomeIcon icon={faTrashAlt} /></span>
+                    </button>
                   : null}
                 </div>
               </div>
+              {/* Show organisation attributes */}
               <div class="columns">
                 <div class="column is-one-quarter">
                   <span>Name</span>
@@ -350,6 +369,7 @@ export const Organisations = () => {
               </div>
             </div>
           :
+            // Show no organisation selected message
             <div style={{width:"100%"}}>
               <h2 class="title is-4">No organisation selected</h2>
               <h3 class="subtitle is-6">Please select or create a organisation from the table panel</h3>

@@ -8,7 +8,14 @@ const initialState = {
   numToCall: ""
 };
 
+/**
+ * Global store component
+ * 
+ * @param {*} param0 Child elements to render
+ * @returns Children + context provider
+ */
 export const Store = ({children}) => {
+  // initialise the store state with the reducer and initial state
   const [state, dispatch] = useReducer(Reducer, initialState);
 
   return(

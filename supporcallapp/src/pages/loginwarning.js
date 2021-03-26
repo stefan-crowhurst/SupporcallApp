@@ -1,6 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+/**
+ * Simple blocker page indicating that user needs to log in
+ * 
+ * @returns Not logged in warning page
+ */
 export const LoginWarning = () => {
   return(
     <>

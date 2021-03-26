@@ -5,6 +5,7 @@ import { Store } from "./store";
 
 const App = () => {
   return (
+    // wrap entire app in store to ensure all areas have access
     <Store>
       <Main />
     </Store>

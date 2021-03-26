@@ -6,6 +6,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faPlus, faSync, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Link, useRouteMatch, useHistory } from 'react-router-dom';
 
+/**
+ * Show a table of all tickets in the system
+ * 
+ * @returns Table of all tickets
+ */
 export const TicketTable = () => {
   let [ticketList, setTicketList] = useState([]);
   let [isLoading, setIsLoading] = useState(true);
@@ -17,7 +22,7 @@ export const TicketTable = () => {
   }, []);
 
   async function refreshTicketTable() {
-    setTicketList([]); // this triggers the loading UI
+    setTicketList([]);
     setIsLoading(true);
     await axios.get("https://supporcallapi.azurewebsites.net/api/Tickets").then((i) => {
       setTicketList(i.data);
@@ -29,6 +34,7 @@ export const TicketTable = () => {
   return (
     <>
       {ticketList && ticketList.length > 0 ?
+        // If there are tickets to render, show table
         <>
           <div class="level">
             <div class="level-left">
@@ -47,6 +53,7 @@ export const TicketTable = () => {
               </Link>
             </div>
           </div>
+          {/* Table with cherry-picked useful attributes */}
           <table class="table is-hoverable is-fullwidth">
             <thead>
               <tr>
@@ -83,37 +90,41 @@ export const TicketTable = () => {
           </table>
         </>
       : isLoading ?
-      <div style={{width:"100%", textAlign:"center"}}>
-        <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
-        <h3><b>Loading tickets...</b></h3>
-      </div>
-      : !isLoading && ticketList.length === 0 ?
-      <div style={{width:"100%"}}>
-        <div class="level">
-          <div class="level-left">
-            <h2 class="title is-4 level-item" style={{marginBottom:"0.4em"}}>All Tickets</h2>
-          </div>
-          <div class="level-right">
-            <button class="button is-rounded is-light level-item" onClick={async (e) => {
-              e.preventDefault(); // prevent page reload
-              refreshTicketTable();
-            }}>
-              <span class="icon"><FontAwesomeIcon icon={faSync} /></span>
-            </button>
-            <Link to={`${match.url}/create`} class="button is-primary level-item">
-              <span class="icon"><FontAwesomeIcon icon={faPlus} /></span>
-              <span>Create</span>
-            </Link>
-          </div>
+        // Show loading bar
+        <div style={{width:"100%", textAlign:"center"}}>
+          <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
+          <h3><b>Loading tickets...</b></h3>
         </div>
-        <div class="notification is-warning"><b>No tickets to display, please create a ticket to continue</b></div>
-      </div>
+      : !isLoading && ticketList.length === 0 ?
+        // Renmder empty table with controls
+        <div style={{width:"100%"}}>
+          <div class="level">
+            <div class="level-left">
+              <h2 class="title is-4 level-item" style={{marginBottom:"0.4em"}}>All Tickets</h2>
+            </div>
+            <div class="level-right">
+              <button class="button is-rounded is-light level-item" onClick={async (e) => {
+                e.preventDefault(); // prevent page reload
+                refreshTicketTable();
+              }}>
+                <span class="icon"><FontAwesomeIcon icon={faSync} /></span>
+              </button>
+              <Link to={`${match.url}/create`} class="button is-primary level-item">
+                <span class="icon"><FontAwesomeIcon icon={faPlus} /></span>
+                <span>Create</span>
+              </Link>
+            </div>
+          </div>
+          <div class="notification is-warning"><b>No tickets to display, please create a ticket to continue</b></div>
+        </div>
       :
-      <div style={{width:"100%", textAlign:"center"}}>
-        <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
-        <h3><b>Attempting to load tickets</b></h3>
-        <h3><b>An error may have occurred, please refresh the page or contact an administrator</b></h3>
-      </div>}
+        // Feedback about error
+        <div style={{width:"100%", textAlign:"center"}}>
+          <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
+          <h3><b>Attempting to load tickets</b></h3>
+          <h3><b>An error may have occurred, please refresh the page or contact an administrator</b></h3>
+        </div>
+      }
     </>
   );
 }
