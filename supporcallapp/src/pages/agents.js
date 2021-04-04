@@ -5,14 +5,22 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faPencilAlt, faPlus, faSync, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { Context } from '../store';
 
+/**
+ * Page which allows for viewing, updating, creating and deleting agents
+ * 
+ * @returns Page with full range of agent data management interactions
+ */
 export const Agents = () => {
+  // Meta page state:
   let [agentList, setAgentList] = useState([]);
   let [currentAgent, setCurrentAgent] = useState();
   let [detailLoading, setDetailLoading] = useState(false);
   let [agentEditMode, setAgentEditMode] = useState(false);
   let [agentCreateMode, setAgentCreateMode] = useState(false);
   let [isLoading, setIsLoading] = useState(true);
+  const [store] = useContext(Context);
   
+  // Agent state:
   // react does not update the value props on html elements where the
   // value is set to a property of a stateful object, this means the form does
   // not update when using onChange/onInput. Since react doesn't support
@@ -24,8 +32,6 @@ export const Agents = () => {
   let [newPassword, setNewPassword] = useState("");
   let [newRole, setNewRole] = useState("");
   let [newAdmin, setNewAdmin] = useState(false);
-  
-  const [store] = useContext(Context);
 
   useEffect(() => {
     refreshAgentTable();
@@ -42,7 +48,7 @@ export const Agents = () => {
 
   async function refreshAgentTable(isdelete) {
     setIsLoading(true);
-    setAgentList([]); // this triggers the loading UI
+    setAgentList([]);
     await axios.get("https://supporcallapi.azurewebsites.net/api/Agents").then((i) => {
       setAgentList(i.data);
     }).then(() => {
@@ -82,6 +88,7 @@ export const Agents = () => {
       <div class="column">
         <div class="table-container box" style={{width:"100%"}}>
           {agentList && agentList.length > 0 ?
+            // Render agent table with cherry-picked attributes
             <>
               <div class="level">
                 <div class="level-left">
@@ -144,46 +151,52 @@ export const Agents = () => {
               </table>
             </>
           : isLoading ?
-          <div style={{width:"100%", textAlign:"center"}}>
-            <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
-            <h3><b>Loading agents...</b></h3>
-          </div>
-          : !isLoading && agentList.length === 0 ?
-          <div style={{width:"100%"}}>
-            <div class="level">
-              <div class="level-left">
-                <h2 class="title is-4 level-item" style={{marginBottom:"0.4em"}}>All Agents</h2>
-              </div>
-              <div class="level-right">
-                <button class="button is-rounded is-light level-item" onClick={async (e) => {
-                  e.preventDefault(); // prevent page reload
-                  refreshAgentTable();
-                }}>
-                  <span class="icon"><FontAwesomeIcon icon={faSync} /></span>
-                </button>
-                <button class="button is-primary level-item" onClick={(e) => createAgentClickRoutine(e)}>
-                  <span class="icon"><FontAwesomeIcon icon={faPlus} /></span>
-                  <span>Create</span>
-                </button>
-              </div>
+            // Show loading bar
+            <div style={{width:"100%", textAlign:"center"}}>
+              <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
+              <h3><b>Loading agents...</b></h3>
             </div>
-            <div class="notification is-warning"><b>No agents to display, please create an agent to continue</b></div>
-          </div>
+          : !isLoading && agentList.length === 0 ?
+            // Show message describing lack of agents
+            <div style={{width:"100%"}}>
+              <div class="level">
+                <div class="level-left">
+                  <h2 class="title is-4 level-item" style={{marginBottom:"0.4em"}}>All Agents</h2>
+                </div>
+                <div class="level-right">
+                  <button class="button is-rounded is-light level-item" onClick={async (e) => {
+                    e.preventDefault(); // prevent page reload
+                    refreshAgentTable();
+                  }}>
+                    <span class="icon"><FontAwesomeIcon icon={faSync} /></span>
+                  </button>
+                  <button class="button is-primary level-item" onClick={(e) => createAgentClickRoutine(e)}>
+                    <span class="icon"><FontAwesomeIcon icon={faPlus} /></span>
+                    <span>Create</span>
+                  </button>
+                </div>
+              </div>
+              <div class="notification is-warning"><b>No agents to display, please create an agent to continue</b></div>
+            </div>
           :
-          <div style={{width:"100%", textAlign:"center"}}>
-            <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
-            <h3><b>Attempting to load agents</b></h3>
-            <h3><b>An error may have occurred, please refresh the page or contact an administrator</b></h3>
-          </div>}
+            // Show error message
+            <div style={{width:"100%", textAlign:"center"}}>
+              <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
+              <h3><b>Attempting to load agents</b></h3>
+              <h3><b>An error may have occurred, please refresh the page or contact an administrator</b></h3>
+            </div>
+          }
         </div>
       </div>
+      {/* Agent Detail Section */}
       <div class="column">
         <div class="box" style={{width:"100%"}}>
           {detailLoading ?
-          <div style={{width:"100%", textAlign:"center"}}>
-            <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
-            <h3><b>Loading details...</b></h3>
-          </div>
+            // Show loading bar
+            <div style={{width:"100%", textAlign:"center"}}>
+              <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
+              <h3><b>Loading details...</b></h3>
+            </div>
           : (currentAgent && agentEditMode) || (agentCreateMode && store.isAdminLoggedIn) ?
             // agent detail editing view
             <div style={{width:"100%"}}>
@@ -192,16 +205,19 @@ export const Agents = () => {
                   <h2 class="title is-4 level-item" style={{marginBottom:"0.4em"}}>{agentCreateMode ? <>Creating Agent</> : <>Editing Agent: {currentAgent.id}</>}</h2>
                 </div>
                 {!agentCreateMode ?
-                <div class="level-right">
-                  <button class="button is-rounded is-dark level-item" onClick={(e) => {
-                    e.preventDefault(); // prevent page reload
-                    clearNewObject();
-                    setAgentEditMode(!agentEditMode);
-                  }}>
-                    <span class="icon"><FontAwesomeIcon icon={faPencilAlt} /></span>
-                  </button>
-                </div> : null}
+                  // Render pencil toggle if editing
+                  <div class="level-right">
+                    <button class="button is-rounded is-dark level-item" onClick={(e) => {
+                      e.preventDefault(); // prevent page reload
+                      clearNewObject();
+                      setAgentEditMode(!agentEditMode);
+                    }}>
+                      <span class="icon"><FontAwesomeIcon icon={faPencilAlt} /></span>
+                    </button>
+                  </div>
+                : null}
               </div>
+              {/* Render agent details */}
               <div class="columns">
                 <div class="column is-one-quarter">
                   <span>Forename</span>
@@ -245,32 +261,33 @@ export const Agents = () => {
                 </div>
               : null}
               {store.isAdminLoggedIn ?
-              <div class="columns">
-                <div class="column is-one-quarter">
-                  <span>Role</span>
-                </div>
-                <div class="column">
-                  <input class="input" type="text" value={newRole} onChange={(e) => {
-                    setNewRole(e.target.value);
-                  }} />
-                </div>
-              </div>
-              : null}
-              {store.isAdminLoggedIn ?
-              <div class="columns">
-                <div class="column is-one-quarter">
-                  <span>Is Administrator?</span>
-                </div>
-                <div class="column">
-                  <div class="checkbox">
-                    <input type="checkbox" checked={newAdmin} onChange={(e) => {
-                      setNewAdmin(e.target.checked);
+                <div class="columns">
+                  <div class="column is-one-quarter">
+                    <span>Role</span>
+                  </div>
+                  <div class="column">
+                    <input class="input" type="text" value={newRole} onChange={(e) => {
+                      setNewRole(e.target.value);
                     }} />
                   </div>
                 </div>
-              </div>
+              : null}
+              {store.isAdminLoggedIn ?
+                <div class="columns">
+                  <div class="column is-one-quarter">
+                    <span>Is Administrator?</span>
+                  </div>
+                  <div class="column">
+                    <div class="checkbox">
+                      <input type="checkbox" checked={newAdmin} onChange={(e) => {
+                        setNewAdmin(e.target.checked);
+                      }} />
+                    </div>
+                  </div>
+                </div>
               : null}
               <div style={{width:"100%", textAlign:"center"}}>
+                {/* Render update/edit button depending on mode */}
                 {agentCreateMode && store.isAdminLoggedIn ? 
                   <button class="button is-primary" onClick={async (e) => {
                     e.preventDefault();
@@ -399,6 +416,7 @@ export const Agents = () => {
               </div>
             </div>
           :
+            // Show when no agent selected
             <div style={{width:"100%"}}>
               <h2 class="title is-4">No agent selected</h2>
               <h3 class="subtitle is-6">Please select or create an agent from the table panel</h3>

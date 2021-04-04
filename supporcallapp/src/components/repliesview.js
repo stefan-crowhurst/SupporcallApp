@@ -6,8 +6,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import moment from "moment";
 import { Context } from '../store';
 
+/**
+ * Shows all replies to a ticket and allow user to add more replies
+ * Requires ticketid in parent.
+ * 
+ * @returns UI for current replies/notes and adding replies/notes
+ */
 export const RepliesView = () => {
-  const { ticketid } = useParams();
+  const { ticketid } = useParams(); // get ticket id from parent
   let [responses, setResponses] = useState([]);
   let [isLoading, setIsLoading] = useState(true);
   let [isInternalNote, setIsInternalNote] = useState(false);
@@ -47,12 +53,15 @@ export const RepliesView = () => {
         </div>
       </div>
       {isLoading ?
+        // show loading bar while api req is made
         <div style={{width:"100%", textAlign:"center"}}>
           <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
           <h3><b>Loading ticket responses...</b></h3>
         </div>
       : responses.length > 0 ?
+        // if there are replies/notes
         responses.map((r) => {
+          // map replies/notes to elements and style according to the data
           var isRecording = r.replyContent.startsWith("https://api.twilio.com/2010-04-01/Accounts/"); // could include more of the link here but that would expose account sid, can reasonably assume this will always be a recording
           return(
             <div id={`Reply ${r.replyIndex}`} style={r.internalNote ? {backgroundColor:"#fff8cc", width:"100%", padding:"1.25rem", borderBottom:"1px solid #d0d0d0"} : {width:"100%", padding:"1.25rem", borderBottom:"1px solid #d0d0d0"}}>
@@ -80,6 +89,7 @@ export const RepliesView = () => {
           <h3><b>No responses found</b></h3>
         </div>
       }
+      {/* Reply addition form */}
       <div style={{padding:"1.25rem"}}>
         <div class="level">
           <div class="level-left">
@@ -88,7 +98,7 @@ export const RepliesView = () => {
         </div>
         <textarea class="textarea" placeholder="Write your response here..." style={{marginBottom:"1em"}} value={ticketReplyContent} onChange={(e) => setTicketReplyContent(e.target.value)} />
         <div style={{display:"flex", justifyContent:"flex-end", alignItems:"center", width:"100%"}}>
-          <div class="checkbox" style={{paddingRight:"2em"}}>
+          <div class="checkbox" style={{paddingRight:"2em"}}> {/* Toggle whether reply is internal note or not */}
             <input type="checkbox" id="internalnotecheck" checked={isInternalNote} onChange={(e) => {
               setIsInternalNote(e.target.checked);
               if (ticketReplyType === "Note") {

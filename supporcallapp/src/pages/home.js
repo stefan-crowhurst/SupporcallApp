@@ -8,6 +8,15 @@ import moment from "moment";
 import { Context } from "../store";
 import { Pie } from "react-chartjs-2";
 
+/**
+ * Home dashboard page, comprised of 4 tiles:
+ * 1 - Recently Updated Tickets
+ * 2 - Assigned Tickets
+ * 3 - Ticket Status Reports
+ * 4 - Contact Speeddial
+ * 
+ * @returns Tiled dashboard page
+ */
 export const Home = () => {
   let [recentTickets, setRecentTickets] = useState([]);
   let [assignedTickets, setAssignedTickets] = useState([]);
@@ -45,6 +54,7 @@ export const Home = () => {
   return (
     <div class="box" style={{width:"100%"}}>
       <div class="level">
+        {/* Title and refresh */}
         <div class="level-left">
           <h2 class="title is-3 level-item">Dashboard</h2>
         </div>
@@ -58,8 +68,11 @@ export const Home = () => {
         </div>
       </div>
       <div class="tile is-ancestor">
+        {/* Parent tile */}
         <div class="tile is-parent is-vertical">
+          {/* Left-hand tiles */}
           <div class="box tile is-12">
+            {/* Recent tickets tile */}
             <div class="content" style={{width:"100%"}}>
               <div class="level">
                 <div class="level-left">
@@ -75,14 +88,17 @@ export const Home = () => {
                   </button>
                 </div>
               </div>
-              {isLoading ? 
+              {isLoading ?
+                // Show loading bar
                 <div style={{width:"100%", textAlign:"center"}}>
                   <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
                   <h3 style={{fontSize:"1em"}}><b>Loading recently updated tickets...</b></h3> {/* Not sure why the font increased .5 em here without styling? */}
                 </div>
               : !isLoading && recentTickets.length === 0 ?
+                // Show no tickets message
                 <div class="notification is-warning"><b>No tickets to display</b></div>
               :
+                // Show table with cherry-picker attributes
                 <table class="table is-hoverable is-fullwidth">
                   <thead>
                     <tr>
@@ -115,6 +131,7 @@ export const Home = () => {
             </div>
           </div>
           <div class="box tile is-12">
+            {/* Ticket status tile */}
             <div class="content" style={{width:"100%"}}>
               <div class="level">
                 <div class="level-left">
@@ -130,12 +147,14 @@ export const Home = () => {
                   </button>
                 </div>
               </div>
-              {isLoading ? 
+              {isLoading ?
+                // Show loading bar
                 <div style={{width:"100%", textAlign:"center"}}>
                   <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
                   <h3 style={{fontSize:"1em"}}><b>Loading report...</b></h3> {/* Not sure why the font increased .5 em here without styling? */}
                 </div>
               :
+                // Generate and show pie chart
                 <Pie
                   data={{
                     labels: stats ? Object.keys(stats.statuses) : [],
@@ -155,7 +174,9 @@ export const Home = () => {
           </div>
         </div>
         <div class="tile is-parent is-vertical">
+          {/* Right hand tiles */}
           <div class="box tile is-12">
+            {/* Assigned tickets tile */}
             <div class="content" style={{width:"100%"}}>
               <div class="level">
                 <div class="level-left">
@@ -171,14 +192,17 @@ export const Home = () => {
                   </button>
                 </div>
               </div>
-              {isLoading ? 
+              {isLoading ?
+                // Show loaading bar
                 <div style={{width:"100%", textAlign:"center"}}>
                   <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
                   <h3 style={{fontSize:"1em"}}><b>Loading assigned tickets...</b></h3> {/* Not sure why the font increased .5 em here without styling? */}
                 </div>
               : !isLoading && assignedTickets.length === 0 ?
+                // Show no tickets message
                 <div class="notification is-warning"><b>No tickets assigned, pick up some free tickets or seek advice from your manager</b></div>
               :
+                // Show ticket table with cherry-picked attributes
                 <table class="table is-hoverable is-fullwidth">
                   <thead>
                     <tr>
@@ -209,6 +233,7 @@ export const Home = () => {
             </div>
           </div>
           <div class="box tile is-12">
+            {/* Contact speeddial tile */}
             <div class="content" style={{width:"100%"}}>
               <div class="level">
                 <div class="level-left">
@@ -224,14 +249,17 @@ export const Home = () => {
                   </button>
                 </div>
               </div>
-              {isLoading ? 
+              {isLoading ?
+                // Show loading bar
                 <div style={{width:"100%", textAlign:"center"}}>
                   <progress class="progress is-primary" max="100" style={{width:"100%", marginBottom:"1em"}} />
                   <h3 style={{fontSize:"1em"}}><b>Loading contacts...</b></h3> {/* Not sure why the font increased .5 em here without styling? */}
                 </div>
               : !isLoading && contacts.length === 0 ?
+                // Show no contacts message
                 <div class="notification is-warning"><b>No contacts to display</b></div>
               :
+                // Show contact table with cherry-picked attributes
                 <table class="table is-hoverable is-fullwidth">
                   <thead>
                     <tr>
@@ -246,6 +274,7 @@ export const Home = () => {
                   <tbody>
                     {contacts.map((c) =>
                       <tr id={c.id} style={{cursor:"pointer"}} onClick={() => {
+                        // Update phone number and trigger dialler display
                         dispatch({type: "UPDATE_NUMBER", payload: {numToCall: c.phoneNumber}});
                         document.getElementById("dialler-modal").classList.add("is-active");
                       }}>

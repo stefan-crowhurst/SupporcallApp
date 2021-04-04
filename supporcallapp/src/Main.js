@@ -12,6 +12,11 @@ import { Login } from "./pages/login";
 import { Context } from "./store";
 import { LoginWarning } from './pages/loginwarning';
 
+/**
+ * Main page and central router hub, houses persistent toolbar, effectively the parent of the rest of the app
+ * 
+ * @returns Router hub page for rest of app
+ */
 const Main = () => {
   const [store] = useContext(Context);
 
@@ -21,6 +26,7 @@ const Main = () => {
           <Toolbar />
         </div>
 
+        {/* Render each page depending on the route, or login warning if not logged in */}
         <div style={{width:"100%", paddingLeft:"0.5%", paddingRight:"0.5%", paddingTop:"0.25%"}}>
           <Switch>
             <Route path="/tickets">
