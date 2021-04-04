@@ -1,4 +1,4 @@
-import { faReply, faSync } from "@fortawesome/free-solid-svg-icons";
+import { faReply, faStickyNote, faSync } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
@@ -83,10 +83,10 @@ export const RepliesView = () => {
       <div style={{padding:"1.25rem"}}>
         <div class="level">
           <div class="level-left">
-            <h3 class="title is-5">Add a reply</h3>
+            <h3 class="title is-5">Add a {isInternalNote ? "note" : "reply"}</h3>
           </div>
         </div>
-        <textarea class="textarea" placeholder="Write your reply here..." style={{marginBottom:"1em"}} value={ticketReplyContent} onChange={(e) => setTicketReplyContent(e.target.value)} />
+        <textarea class="textarea" placeholder="Write your response here..." style={{marginBottom:"1em"}} value={ticketReplyContent} onChange={(e) => setTicketReplyContent(e.target.value)} />
         <div style={{display:"flex", justifyContent:"flex-end", alignItems:"center", width:"100%"}}>
           <div class="checkbox" style={{paddingRight:"2em"}}>
             <input type="checkbox" id="internalnotecheck" checked={isInternalNote} onChange={(e) => {
@@ -115,9 +115,13 @@ export const RepliesView = () => {
             });
           }}>
             <span class="icon">
-              <FontAwesomeIcon icon={faReply} />
+              {isInternalNote ? 
+                <FontAwesomeIcon icon={faStickyNote} />
+              :
+                <FontAwesomeIcon icon={faReply} />
+              }
             </span>
-            <span>Reply</span>
+            <span>{isInternalNote ? "Note" : "Reply"}</span>
           </button>
         </div>
       </div>
