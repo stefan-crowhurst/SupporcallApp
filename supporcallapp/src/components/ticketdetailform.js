@@ -239,7 +239,7 @@ export const TicketDetailForm = (props) => {
         : props.mode === "create" ?
           <div class="columns">
             <div class="column is-2">
-              <span><abbr title="Is there an SLA agreement with the client?">SLA Agreed?</abbr></span>
+              <span><abbr title="Is there a service level agreement with the client?">SLA Agreed?</abbr></span>
             </div>
             <div class="column">
               <div class="checkbox">

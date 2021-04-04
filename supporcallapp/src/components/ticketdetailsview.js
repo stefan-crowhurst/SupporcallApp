@@ -154,7 +154,7 @@ export const TicketDetailsView = () => {
         </div>
         <div class="columns">
           <div class="column is-4">
-            <b>SLA Met <abbr title="Only applicable if SLA has been agreed with Organisation/Client">(if agreed)</abbr></b>
+            <b>SLA Met <abbr title="Only applicable if service level agreement with Organisation/Client">(if agreed)</abbr></b>
           </div>
           <div class="column">
             <span>{ticket.slaMet !== null ? <FontAwesomeIcon icon={ticket.slaMet === 1 ? faCheck : faTimes} /> : <>No SLA details found</>}</span>

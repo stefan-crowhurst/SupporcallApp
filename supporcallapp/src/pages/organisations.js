@@ -102,7 +102,7 @@ export const Organisations = () => {
                     <th>Name</th>
                     <th>Email</th>
                     <th><abbr title="Phone Number">Phone #</abbr></th>
-                    <th><abbr title="Service Level Agreement?">SLA</abbr></th>
+                    <th><abbr title="Service Level Agreement?">SLA?</abbr></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -229,7 +229,7 @@ export const Organisations = () => {
               {store.isAdminLoggedIn ?
                 <div class="columns">
                   <div class="column is-one-quarter">
-                    <span>SLA</span>
+                    <abbr title="Service Level Agreement">SLA</abbr>
                   </div>
                   <div class="column">
                     <div class="checkbox">
@@ -342,7 +342,7 @@ export const Organisations = () => {
               </div>
               <div class="columns">
                 <div class="column is-one-quarter">
-                  <span>SLA</span>
+                  <abbr title="Service Level Agreement?">SLA?</abbr>
                 </div>
                 <div class="column">
                   <label><FontAwesomeIcon icon={currentOrganisation.sla ? faCheck : faTimes} /></label>

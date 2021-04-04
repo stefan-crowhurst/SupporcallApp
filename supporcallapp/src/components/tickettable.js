@@ -59,7 +59,7 @@ export const TicketTable = () => {
                 <th>Agent</th>
                 <th><abbr title="Time last updated">Updated</abbr></th>
                 <th>Replies</th>
-                <th><abbr title="SLA Met?">SLA?</abbr></th>
+                <th><abbr title="Service Level Agreement met?">SLA?</abbr></th>
               </tr>
             </thead>
             <tbody>
