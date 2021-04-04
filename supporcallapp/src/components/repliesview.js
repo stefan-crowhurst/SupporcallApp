@@ -52,19 +52,29 @@ export const RepliesView = () => {
           <h3><b>Loading ticket responses...</b></h3>
         </div>
       : responses.length > 0 ?
-        responses.map((r) => 
-          <div id={`Reply ${r.replyIndex}`} style={r.internalNote ? {backgroundColor:"#fff8cc", width:"100%", padding:"1.25rem", borderBottom:"1px solid #d0d0d0"} : {width:"100%", padding:"1.25rem", borderBottom:"1px solid #d0d0d0"}}>
-            <div class="level" style={{marginBottom:"0.5em"}}>
-              <div class="level-left">
-                <h3 class="title is-6">#{r.replyIndex} {r.internalNote ? "Internal Note" : "Reply"} - At {moment(r.repliedAt).format("HH:mm DD/MM/YY")}</h3>
+        responses.map((r) => {
+          var isRecording = r.replyContent.startsWith("https://api.twilio.com/2010-04-01/Accounts/"); // could include more of the link here but that would expose account sid, can reasonably assume this will always be a recording
+          return(
+            <div id={`Reply ${r.replyIndex}`} style={r.internalNote ? {backgroundColor:"#fff8cc", width:"100%", padding:"1.25rem", borderBottom:"1px solid #d0d0d0"} : {width:"100%", padding:"1.25rem", borderBottom:"1px solid #d0d0d0"}}>
+              <div class="level" style={{marginBottom:"0.5em"}}>
+                <div class="level-left">
+                  <h3 class="title is-6">#{r.replyIndex} {isRecording ? "Call Recording" : r.internalNote ? "Internal Note" : "Reply"} - At {moment(r.repliedAt).format("HH:mm DD/MM/YY")}</h3>
+                </div>
+                <div class="level-left">
+                  <h3 class="title is-6">From {r.replierId + " via"} {r.contactAddress} by {r.replyType}</h3>
+                </div>
               </div>
-              <div class="level-left">
-                <h3 class="title is-6">From {r.replierId + " via"} {r.contactAddress} by {r.replyType}</h3>
-              </div>
+              {isRecording ?
+                <audio controls>
+                  <source src={r.replyContent} type="audio/mpeg" />
+                  Your browser does not support the audio player, please visit <a href={r.replyContent} target="_blank" rel="noopener noreferrer">this link</a> to access the recording
+                </audio>
+              :
+                <div>{r.replyContent}</div>
+              }
             </div>
-            <div>{r.replyContent}</div>
-          </div>
-        )
+          );
+        })
       :
         <div style={{width:"100%", textAlign:"center"}}>
           <h3><b>No responses found</b></h3>
