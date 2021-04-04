@@ -11,7 +11,17 @@ export const Login = () => {
   const history = useHistory();
 
   return(
-    <div class="box">
+    <form class="box" onSubmit={(e) => {
+      e.preventDefault();
+      axios.post("https://supporcallapi.azurewebsites.net/api/Agents/login", { agentId: userId, password: password }).then((r) => {
+        if (r.status === 200) {
+          dispatch({type: "LOGGED_IN", payload: {loggedInAgentId: r.data.agentId, isAdminLoggedIn: r.data.isAdmin}});
+          history.push(`${match.url.replace("login", "")}`);
+        }
+      }).catch(() => {
+        alert("Login not completed, please check your details and try again");
+      });
+    }}>
       <div class="columns">
         <div class="column is-2">
           <span>User ID</span>
@@ -33,17 +43,8 @@ export const Login = () => {
         </div>
       </div>
       <div style={{width:"100%", textAlign:"center"}}>
-        <button class="button is-primary" onClick={(e) => {
-          axios.post("https://supporcallapi.azurewebsites.net/api/Agents/login", { agentId: userId, password: password }).then((r) => {
-            if (r.status === 200) {
-              dispatch({type: "LOGGED_IN", payload: {loggedInAgentId: r.data.agentId, isAdminLoggedIn: r.data.isAdmin}});
-              history.push(`${match.url.replace("login", "")}`);
-            }
-          }).catch(() => {
-            alert("Login not completed, please check your details and try again");
-          });
-        }}>Log In</button>
+        <button type="submit" class="button is-primary">Log In</button>
       </div>
-    </div>
+    </form>
   );
 }
