@@ -1,10 +1,11 @@
 import { useParams, useRouteMatch, useHistory } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import moment from "moment";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes, faPencilAlt, faSync } from '@fortawesome/free-solid-svg-icons';
 import { CallButton } from "./callbutton";
+import { Context } from '../store';
 
 /**
  * Component to show the ticket metadata details.
@@ -20,6 +21,7 @@ export const TicketDetailsView = () => {
   let [contactName, setContactName] = useState("");
   let match = useRouteMatch();
   const history = useHistory();
+  const [store] = useContext(Context);
 
   useEffect(() => {
     refreshTicketDetails();
@@ -126,7 +128,34 @@ export const TicketDetailsView = () => {
               <b>Agent</b>
             </div>
             <div class="column">
-              <span>{ticket.agentId ? <>{ticket.agentId}</> : <>No agent found</>}</span>
+              <span>
+                {ticket.agentId ?
+                  <>{ticket.agentId}</>
+                :
+                  <div style={{display:"flex", alignItems:"center"}}>
+                    <>No agent found</>
+                    <button class="button is-primary" style={{margin:"0.4em"}} onClick={async (e) => {
+                      e.preventDefault();
+                      setDetailLoading(true);
+                      await axios.post("https://supporcallapi.azurewebsites.net/api/Tickets/update", {
+                        id: ticketid,
+                        title: ticket.title,
+                        status: ticket.status,
+                        orgId: ticket.orgId,
+                        contactId: ticket.contactId,
+                        agentId: store.loggedInAgentId,
+                        priority: ticket.priority,
+                        complexity: ticket.complexity,
+                        labels: ticket.labels,
+                        slaMet: ticket.slaMet ? 1 : 0,
+                        requesterId: store.loggedInAgentId
+                      }).then(() => {
+                        refreshTicketDetails();
+                      });
+                    }}>Assign to me</button>
+                  </div>
+                }
+              </span>
             </div>
           </div>
           <div class="columns">
@@ -162,7 +191,7 @@ export const TicketDetailsView = () => {
           </div>
           <div class="columns">
             <div class="column is-4">
-              <b>SLA Met <abbr title="Only applicable if SLA has been agreed with Organisation/Client">(if agreed)</abbr></b>
+              <b>SLA Met <abbr title="Only applicable if service level agreement has been agreed with Organisation/Client">(if agreed)</abbr></b>
             </div>
             <div class="column">
               <span>{ticket.slaMet !== null ? <FontAwesomeIcon icon={ticket.slaMet === 1 ? faCheck : faTimes} /> : <>No SLA details found</>}</span>

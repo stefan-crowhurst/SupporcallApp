@@ -347,7 +347,7 @@ export const Dialler = () => {
                             currentCall.mute(newState);
                             setIsMuted(newState);
                           }}>
-                            {isMuted ? <FontAwesomeIcon icon={faMicrophone} /> : <FontAwesomeIcon icon={faMicrophoneSlash} />}
+                            {isMuted ? <FontAwesomeIcon icon={faMicrophoneSlash} /> : <FontAwesomeIcon icon={faMicrophone} />}
                           </div>
                         </div>
                       : null}

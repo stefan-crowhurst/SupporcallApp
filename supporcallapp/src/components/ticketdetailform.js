@@ -238,7 +238,7 @@ export const TicketDetailForm = (props) => {
           {props.mode === "edit" ?
             <div class="columns">
               <div class="column is-2">
-                <span><abbr title="If agreed with client">SLA Met?</abbr></span>
+                <span><abbr title="Has the service level agreement (if agreed with client) been met?">SLA Met?</abbr></span>
               </div>
               <div class="column">
                 <div class="checkbox">
@@ -283,25 +283,25 @@ export const TicketDetailForm = (props) => {
                 });
               }}>Create Ticket</button>
             : props.mode === "edit" ?
-            <button class="button is-primary" style={{margin:"0.4em"}} onClick={async (e) => {
-              e.preventDefault();
-              await axios.post("https://supporcallapi.azurewebsites.net/api/Tickets/update", {
-                id: ticketid,
-                title: title,
-                status: status,
-                orgId: orgId,
-                contactId: contactId,
-                agentId: agentId,
-                priority: priority,
-                complexity: complexity,
-                labels: labels,
-                slaMet: slaMet ? 1 : 0,
-                requesterId: store.loggedInAgentId
-              }).then(() => {
-                clearObjects();
-                history.push(match.url.replace("/edit", ""));
-              });
-            }}>Update Ticket</button>
+              <button class="button is-primary" style={{margin:"0.4em"}} onClick={async (e) => {
+                e.preventDefault();
+                await axios.post("https://supporcallapi.azurewebsites.net/api/Tickets/update", {
+                  id: ticketid,
+                  title: title,
+                  status: status,
+                  orgId: orgId,
+                  contactId: contactId,
+                  agentId: agentId,
+                  priority: priority,
+                  complexity: complexity,
+                  labels: labels,
+                  slaMet: slaMet ? 1 : 0,
+                  requesterId: store.loggedInAgentId
+                }).then(() => {
+                  clearObjects();
+                  history.push(match.url.replace("/edit", ""));
+                });
+              }}>Update Ticket</button>
             : null}
             <button class="button is-warning" style={{margin:"0.4em"}} onClick={async (e) => {
               e.preventDefault();

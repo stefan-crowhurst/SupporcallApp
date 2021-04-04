@@ -1,4 +1,4 @@
-import { faReply, faSync } from "@fortawesome/free-solid-svg-icons";
+import { faReply, faStickyNote, faSync } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
@@ -60,20 +60,30 @@ export const RepliesView = () => {
         </div>
       : responses.length > 0 ?
         // if there are replies/notes
-        responses.map((r) => 
+        responses.map((r) => {
           // map replies/notes to elements and style according to the data
-          <div id={`Reply ${r.replyIndex}`} style={r.internalNote ? {backgroundColor:"#fff8cc", width:"100%", padding:"1.25rem", borderBottom:"1px solid #d0d0d0"} : {width:"100%", padding:"1.25rem", borderBottom:"1px solid #d0d0d0"}}>
-            <div class="level" style={{marginBottom:"0.5em"}}>
-              <div class="level-left">
-                <h3 class="title is-6">#{r.replyIndex} {r.internalNote ? "Internal Note" : "Reply"} - At {moment(r.repliedAt).format("HH:mm DD/MM/YY")}</h3>
+          var isRecording = r.replyContent.startsWith("https://api.twilio.com/2010-04-01/Accounts/"); // could include more of the link here but that would expose account sid, can reasonably assume this will always be a recording
+          return(
+            <div id={`Reply ${r.replyIndex}`} style={r.internalNote ? {backgroundColor:"#fff8cc", width:"100%", padding:"1.25rem", borderBottom:"1px solid #d0d0d0"} : {width:"100%", padding:"1.25rem", borderBottom:"1px solid #d0d0d0"}}>
+              <div class="level" style={{marginBottom:"0.5em"}}>
+                <div class="level-left">
+                  <h3 class="title is-6">#{r.replyIndex} {isRecording ? "Call Recording" : r.internalNote ? "Internal Note" : "Reply"} - At {moment(r.repliedAt).format("HH:mm DD/MM/YY")}</h3>
+                </div>
+                <div class="level-left">
+                  <h3 class="title is-6">From {r.replierId + " via"} {r.contactAddress} by {r.replyType}</h3>
+                </div>
               </div>
-              <div class="level-left">
-                <h3 class="title is-6">From {r.replierId + " via"} {r.contactAddress} by {r.replyType}</h3>
-              </div>
+              {isRecording ?
+                <audio controls>
+                  <source src={r.replyContent} type="audio/mpeg" />
+                  Your browser does not support the audio player, please visit <a href={r.replyContent} target="_blank" rel="noopener noreferrer">this link</a> to access the recording
+                </audio>
+              :
+                <div>{r.replyContent}</div>
+              }
             </div>
-            <div>{r.replyContent}</div>
-          </div>
-        )
+          );
+        })
       :
         <div style={{width:"100%", textAlign:"center"}}>
           <h3><b>No responses found</b></h3>
@@ -83,10 +93,10 @@ export const RepliesView = () => {
       <div style={{padding:"1.25rem"}}>
         <div class="level">
           <div class="level-left">
-            <h3 class="title is-5">Add a reply</h3>
+            <h3 class="title is-5">Add a {isInternalNote ? "note" : "reply"}</h3>
           </div>
         </div>
-        <textarea class="textarea" placeholder="Write your reply here..." style={{marginBottom:"1em"}} value={ticketReplyContent} onChange={(e) => setTicketReplyContent(e.target.value)} />
+        <textarea class="textarea" placeholder="Write your response here..." style={{marginBottom:"1em"}} value={ticketReplyContent} onChange={(e) => setTicketReplyContent(e.target.value)} />
         <div style={{display:"flex", justifyContent:"flex-end", alignItems:"center", width:"100%"}}>
           <div class="checkbox" style={{paddingRight:"2em"}}> {/* Toggle whether reply is internal note or not */}
             <input type="checkbox" id="internalnotecheck" checked={isInternalNote} onChange={(e) => {
@@ -115,9 +125,13 @@ export const RepliesView = () => {
             });
           }}>
             <span class="icon">
-              <FontAwesomeIcon icon={faReply} />
+              {isInternalNote ? 
+                <FontAwesomeIcon icon={faStickyNote} />
+              :
+                <FontAwesomeIcon icon={faReply} />
+              }
             </span>
-            <span>Reply</span>
+            <span>{isInternalNote ? "Note" : "Reply"}</span>
           </button>
         </div>
       </div>
