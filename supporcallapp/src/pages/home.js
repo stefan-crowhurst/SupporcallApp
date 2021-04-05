@@ -154,21 +154,26 @@ export const Home = () => {
                   <h3 style={{fontSize:"1em"}}><b>Loading report...</b></h3> {/* Not sure why the font increased .5 em here without styling? */}
                 </div>
               :
-                // Generate and show pie chart
-                <Pie
-                  data={{
-                    labels: stats ? Object.keys(stats.statuses) : [],
-                    datasets: [{
-                      data: stats ? Object.values(stats.statuses) : [],
-                      backgroundColor: ['#D90000', "#ffe08a", "#09a2e3", "#48c78e"],
-                    }]
-                  }}
-                  width={graphWidth}
-                  height={graphHeight}
-                  options={{
-                    maintainAspectRatio: false
-                  }}
-                />
+                // This is a bad way of checking if the values are all 0, but it was the only way I could get it to work
+                stats && (stats.statuses["Open"] !== 0 || stats.statuses["In Need Of Action"] !== 0 || stats.statuses["Actioned"] !== 0 || stats.statuses["Solved"] !== 0) ?
+                  // Generate and show pie chart
+                  <Pie
+                    data={{
+                      labels: stats ? Object.keys(stats.statuses) : [],
+                      datasets: [{
+                        data: stats ? Object.values(stats.statuses) : [],
+                        backgroundColor: ['#D90000', "#ffe08a", "#09a2e3", "#48c78e"],
+                      }]
+                    }}
+                    width={graphWidth}
+                    height={graphHeight}
+                    options={{
+                      maintainAspectRatio: false
+                    }}
+                  />
+                :
+                  // Show no data
+                  <div class="notification is-warning"><b>No ticket status data found</b></div>
               }
             </div>
           </div>
