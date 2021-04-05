@@ -75,12 +75,12 @@ export const TicketTable = () => {
                 // https://github.com/tannerlinsley/react-table/discussions/2336#discussioncomment-18339 
                 <tr id={e.id} style={{cursor:"pointer"}} onClick={() => history.push(`${match.url}/${e.id}`)}>
                   <th>{e.id}</th>
-                  <td>{e.title}</td>
-                  <td>{e.contactId}</td>
-                  <td>{e.orgId}</td>
-                  <td>{e.priority}</td>
-                  <td>{e.status}</td>
-                  <td>{e.agentId}</td>
+                  <td>{e.title ? e.title : "-"}</td>
+                  <td>{e.contactId ? e.contactId : "-"}</td>
+                  <td>{e.orgId ? e.orgId : "-"}</td>
+                  <td>{e.priority ? e.priority : "-"}</td>
+                  <td>{e.status ? e.status : "-"}</td>
+                  <td>{e.agentId ? e.agentId : "-"}</td>
                   <td><b>{moment(e.lastUpdatedAt).format("HH:mm DD/MM/YY")}</b></td>
                   <td>{e.replyCount}</td>
                   <td><FontAwesomeIcon icon={e.slaMet && e.slaMet === 1 ? faCheck : faTimes} /></td>

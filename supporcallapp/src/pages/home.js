@@ -116,11 +116,11 @@ export const Home = () => {
                     {recentTickets.map((e) =>
                       <tr id={e.id} style={{cursor:"pointer"}} onClick={() => history.push(`${match.url.replace("home", "")}tickets/${e.id}`)}>
                         <th>{e.id}</th>
-                        <td>{e.title}</td>
-                        <td>{e.contactId}</td>
-                        <td>{e.priority}</td>
-                        <td>{e.status}</td>
-                        <td>{e.agentId}</td>
+                        <td>{e.title ? e.title : "-"}</td>
+                        <td>{e.contactId ? e.contactId : "-"}</td>
+                        <td>{e.priority ? e.priority : "-"}</td>
+                        <td>{e.status ? e.status : "-"}</td>
+                        <td>{e.agentId ? e.agentId : "-"}</td>
                         <td><b>{moment(e.lastUpdatedAt).format("HH:mm DD/MM/YY")}</b></td>
                         <td><FontAwesomeIcon icon={e.slaMet && e.slaMet === 1 ? faCheck : faTimes} /></td>
                       </tr>
@@ -154,21 +154,26 @@ export const Home = () => {
                   <h3 style={{fontSize:"1em"}}><b>Loading report...</b></h3> {/* Not sure why the font increased .5 em here without styling? */}
                 </div>
               :
-                // Generate and show pie chart
-                <Pie
-                  data={{
-                    labels: stats ? Object.keys(stats.statuses) : [],
-                    datasets: [{
-                      data: stats ? Object.values(stats.statuses) : [],
-                      backgroundColor: ['#D90000', "#ffe08a", "#09a2e3", "#48c78e"],
-                    }]
-                  }}
-                  width={graphWidth}
-                  height={graphHeight}
-                  options={{
-                    maintainAspectRatio: false
-                  }}
-                />
+                // This is a bad way of checking if the values are all 0, but it was the only way I could get it to work
+                stats && (stats.statuses["Open"] !== 0 || stats.statuses["In Need Of Action"] !== 0 || stats.statuses["Actioned"] !== 0 || stats.statuses["Solved"] !== 0) ?
+                  // Generate and show pie chart
+                  <Pie
+                    data={{
+                      labels: stats ? Object.keys(stats.statuses) : [],
+                      datasets: [{
+                        data: stats ? Object.values(stats.statuses) : [],
+                        backgroundColor: ['#D90000', "#ffe08a", "#09a2e3", "#48c78e"],
+                      }]
+                    }}
+                    width={graphWidth}
+                    height={graphHeight}
+                    options={{
+                      maintainAspectRatio: false
+                    }}
+                  />
+                :
+                  // Show no data
+                  <div class="notification is-warning"><b>No ticket status data found</b></div>
               }
             </div>
           </div>
@@ -219,10 +224,10 @@ export const Home = () => {
                     {assignedTickets.map((e) =>
                       <tr id={e.id} style={{cursor:"pointer"}} onClick={() => history.push(`${match.url.replace("home", "")}tickets/${e.id}`)}>
                         <th>{e.id}</th>
-                        <td>{e.title}</td>
-                        <td>{e.contactId}</td>
-                        <td>{e.priority}</td>
-                        <td>{e.status}</td>
+                        <td>{e.title ? e.title : "-"}</td>
+                        <td>{e.contactId ? e.contactId : "-"}</td>
+                        <td>{e.priority ? e.priority : "-"}</td>
+                        <td>{e.status ? e.status : "-"}</td>
                         <td><b>{moment(e.lastUpdatedAt).format("HH:mm DD/MM/YY")}</b></td>
                         <td><FontAwesomeIcon icon={e.slaMet && e.slaMet === 1 ? faCheck : faTimes} /></td>
                       </tr>
@@ -279,11 +284,11 @@ export const Home = () => {
                         document.getElementById("dialler-modal").classList.add("is-active");
                       }}>
                         <th>{c.id}</th>
-                        <td>{c.forename + " " + c.surname}</td>
-                        <td>{c.email}</td>
-                        <td>{c.phoneNumber}</td>
-                        <td>{c.orgId}</td>
-                        <td>{c.role}</td>
+                        <td>{c.forename ? c.forename : "-"} {c.surname ? c.surname : "-"}</td>
+                        <td>{c.email ? c.email : "-"}</td>
+                        <td>{c.phoneNumber ? c.phoneNumber : "-"}</td>
+                        <td>{c.orgId ? c.orgId : "-"}</td>
+                        <td>{c.role ? c.role : "-"}</td>
                       </tr>
                     )}
                   </tbody>

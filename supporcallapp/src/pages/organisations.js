@@ -135,9 +135,9 @@ export const Organisations = () => {
                       });
                     }}>
                       <th>{e.id}</th>
-                      <td>{e.name}</td>
-                      <td>{e.email}</td>
-                      <td>{e.phoneNumber}</td>
+                      <td>{e.name ? e.name : "-"}</td>
+                      <td>{e.email ? e.email : "-"}</td>
+                      <td>{e.phoneNumber ? e.phoneNumber : "-"}</td>
                       <td><FontAwesomeIcon icon={e.sla ? faCheck : faTimes} /></td>
                     </tr>
                   )}
