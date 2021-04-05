@@ -21,7 +21,7 @@ export const TicketDetailForm = (props) => {
   let [labels, setLabels] = useState("");
   let [priority, setPriority] = useState(1);
   let [complexity, setComplexity] = useState(1);
-  let [status, setStatus] = useState("");
+  let [status, setStatus] = useState("Open");
   let [lastUpdatedAt, setLastUpdatedAt] = useState("");
   let [slaMet, setSlaMet] = useState("");
 
@@ -73,7 +73,7 @@ export const TicketDetailForm = (props) => {
     setLabels("");
     setPriority(1);
     setComplexity(1);
-    setStatus("");
+    setStatus("Open");
     setOrgSummary([]);
   }
 
