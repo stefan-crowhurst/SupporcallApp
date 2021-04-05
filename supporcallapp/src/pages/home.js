@@ -116,11 +116,11 @@ export const Home = () => {
                     {recentTickets.map((e) =>
                       <tr id={e.id} style={{cursor:"pointer"}} onClick={() => history.push(`${match.url.replace("home", "")}tickets/${e.id}`)}>
                         <th>{e.id}</th>
-                        <td>{e.title}</td>
-                        <td>{e.contactId}</td>
-                        <td>{e.priority}</td>
-                        <td>{e.status}</td>
-                        <td>{e.agentId}</td>
+                        <td>{e.title ? e.title : "-"}</td>
+                        <td>{e.contactId ? e.contactId : "-"}</td>
+                        <td>{e.priority ? e.priority : "-"}</td>
+                        <td>{e.status ? e.status : "-"}</td>
+                        <td>{e.agentId ? e.agentId : "-"}</td>
                         <td><b>{moment(e.lastUpdatedAt).format("HH:mm DD/MM/YY")}</b></td>
                         <td><FontAwesomeIcon icon={e.slaMet && e.slaMet === 1 ? faCheck : faTimes} /></td>
                       </tr>
@@ -224,10 +224,10 @@ export const Home = () => {
                     {assignedTickets.map((e) =>
                       <tr id={e.id} style={{cursor:"pointer"}} onClick={() => history.push(`${match.url.replace("home", "")}tickets/${e.id}`)}>
                         <th>{e.id}</th>
-                        <td>{e.title}</td>
-                        <td>{e.contactId}</td>
-                        <td>{e.priority}</td>
-                        <td>{e.status}</td>
+                        <td>{e.title ? e.title : "-"}</td>
+                        <td>{e.contactId ? e.contactId : "-"}</td>
+                        <td>{e.priority ? e.priority : "-"}</td>
+                        <td>{e.status ? e.status : "-"}</td>
                         <td><b>{moment(e.lastUpdatedAt).format("HH:mm DD/MM/YY")}</b></td>
                         <td><FontAwesomeIcon icon={e.slaMet && e.slaMet === 1 ? faCheck : faTimes} /></td>
                       </tr>
@@ -284,11 +284,11 @@ export const Home = () => {
                         document.getElementById("dialler-modal").classList.add("is-active");
                       }}>
                         <th>{c.id}</th>
-                        <td>{c.forename + " " + c.surname}</td>
-                        <td>{c.email}</td>
-                        <td>{c.phoneNumber}</td>
-                        <td>{c.orgId}</td>
-                        <td>{c.role}</td>
+                        <td>{c.forename ? c.forename : "-"} {c.surname ? c.surname : "-"}</td>
+                        <td>{c.email ? c.email : "-"}</td>
+                        <td>{c.phoneNumber ? c.phoneNumber : "-"}</td>
+                        <td>{c.orgId ? c.orgId : "-"}</td>
+                        <td>{c.role ? c.role : "-"}</td>
                       </tr>
                     )}
                   </tbody>

@@ -148,10 +148,10 @@ export const Contacts = () => {
                       });
                     }}>
                       <th>{e.id}</th>
-                      <td>{e.forename} {e.surname}</td>
-                      <td>{e.email}</td>
-                      <td>{e.orgId}</td>
-                      <td>{e.role}</td>
+                      <td>{e.forename ? e.forename : "-"} {e.surname ? e.surname : "-"}</td>
+                      <td>{e.email ? e.email : "-"}</td>
+                      <td>{e.orgId ? e.orgId : "-"}</td>
+                      <td>{e.role ? e.role : "-"}</td>
                     </tr>
                   )}
                 </tbody>

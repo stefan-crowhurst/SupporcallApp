@@ -141,9 +141,9 @@ export const Agents = () => {
                       });
                     }}>
                       <th>{e.id}</th>
-                      <td>{e.forename} {e.surname}</td>
-                      <td>{e.email}</td>
-                      <td>{e.role}</td>
+                      <td>{e.forename ? e.forename : "-"} {e.surname ? e.surname : "-"}</td>
+                      <td>{e.email ? e.email : "-"}</td>
+                      <td>{e.role ? e.role : "-"}</td>
                       <td><FontAwesomeIcon icon={e.admin ? faCheck : faTimes} /></td>
                     </tr>
                   )}
